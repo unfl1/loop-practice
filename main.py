@@ -1,21 +1,23 @@
-"""Entry point for the Loop Engineering demo.
+"""Entry point for the Loop Engineering demo."""
 
-The actual iteration runner will be added later. After the loop finishes,
-the presentation deck is rebuilt from the latest outputs/run_* directory.
-"""
+from pathlib import Path
 
-from scripts.build_presentation import build_presentation
+from scripts.post_loop import run_post_loop
 
 
-def run_loop() -> None:
-    """Placeholder for the future Loop execution logic."""
+def run_loop() -> Path | None:
+    """Placeholder for the future Loop execution logic.
+
+    Return the completed run directory when the requested run finishes
+    successfully. Return None or raise an exception for incomplete runs.
+    """
+    return None
 
 
 def main() -> None:
-    try:
-        run_loop()
-    finally:
-        build_presentation()
+    completed_run = run_loop()
+    if completed_run is not None:
+        run_post_loop()
 
 
 if __name__ == "__main__":

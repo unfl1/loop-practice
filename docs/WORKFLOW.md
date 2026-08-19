@@ -1,6 +1,18 @@
 # Workflow
 
-This project runs a simple Loop Engineering workflow for refining a Pomeranian sketch.
+This project runs a Loop Engineering workflow for refining a Pomeranian sketch.
+
+## Run Boundary
+
+A user's requested iteration count is treated as one complete run.
+
+Example:
+
+```text
+루프 10번해 = one run containing 10 iterations
+```
+
+Intermediate iterations are not separate Git publish points. Do not commit or push while the requested run is still in progress.
 
 ## Loop
 
@@ -28,7 +40,38 @@ The original Pomeranian photo remains the fixed reference for every iteration.
 5. Save the evaluation result.
 6. The Prompt Refiner creates the next prompt using only the selected priority differences.
 7. Save the next prompt.
-8. Continue to the next iteration unless a stop condition is met.
+8. Continue to the next iteration unless a stop condition or failure occurs.
+
+## Run Completion
+
+A run is successful only when every requested iteration completes and all required files are saved.
+
+After a successful run:
+
+1. Save all iteration folders under `outputs/run_...`.
+2. Generate `summary.json` inside that run folder.
+3. Rebuild the presentation once from the latest successful run.
+4. Copy only presentation-required actual assets into `presentation/assets/latest-run/`.
+5. Keep `outputs/` out of Git because it is local experiment history.
+6. Check `git status`.
+7. Verify that no sensitive information or unexpected files are commit candidates.
+8. Commit once if there are changes.
+9. Push once to `origin/main`.
+10. Let GitHub Pages publish the presentation after the final push.
+
+Default post-loop commit message:
+
+```text
+chore: update loop experiment results
+```
+
+## Failure Rules
+
+- If the requested iteration count is not fully completed, do not update the presentation.
+- If image generation, evaluation, or storage fails, do not automatically push.
+- Do not automatically commit or push a failed run.
+- If sensitive information or unexpected files appear in commit candidates, do not push; report the issue to the user.
+- Do not record failed or skipped steps as successful.
 
 ## Refinement Strength
 
@@ -56,8 +99,8 @@ Iterations 5 and later:
 
 The loop stops when one of these conditions is met:
 
-- The configured maximum iteration count is reached.
-- A target score is reached, if a target score is configured.
+- The requested iteration count is reached.
 - An execution error prevents the next step from being completed.
+- A target score is reached, if a target score is explicitly configured.
 
-If an image generation or evaluation step does not actually complete, the result must not be recorded as successful.
+If a stop condition happens before all requested iterations complete, treat the run as incomplete unless the user explicitly configured that stop condition as successful.

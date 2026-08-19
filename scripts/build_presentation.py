@@ -1,4 +1,4 @@
-"""Build presentation/index.html from fixed story slides and latest run outputs."""
+"""Build presentation/index.html from the latest successful run output."""
 
 from __future__ import annotations
 
@@ -14,24 +14,32 @@ INPUTS_DIR = ROOT / "inputs"
 OUTPUTS_DIR = ROOT / "outputs"
 PRESENTATION_DIR = ROOT / "presentation"
 ASSETS_DIR = PRESENTATION_DIR / "assets"
+LATEST_RUN_ASSETS_DIR = ASSETS_DIR / "latest-run"
 INDEX_PATH = PRESENTATION_DIR / "index.html"
 
 
 @dataclass
 class IterationResult:
     iteration: int
-    image_asset: str | None
+    image_asset: str
     evaluation: dict
     next_prompt: str
 
 
 @dataclass
 class RunData:
-    run_dir: Path | None
-    summary: dict | None
+    run_dir: Path
+    summary: dict
     reference_asset: str | None
     iterations: list[IterationResult]
-    warnings: list[str]
+
+
+@dataclass
+class BuildResult:
+    updated: bool
+    run_dir: Path | None
+    iterations: int
+    reason: str
 
 
 def read_json(path: Path) -> dict:
@@ -42,13 +50,6 @@ def read_text(path: Path) -> str:
     return path.read_text(encoding="utf-8").strip()
 
 
-def latest_run_dir() -> Path | None:
-    runs = [path for path in OUTPUTS_DIR.glob("run_*") if path.is_dir()]
-    if not runs:
-        return None
-    return max(runs, key=lambda path: path.stat().st_mtime)
-
-
 def reference_image() -> Path | None:
     for name in ("pomeranian.png", "pomeranian.jpg", "pomeranian.jpeg"):
         path = INPUTS_DIR / name
@@ -57,63 +58,99 @@ def reference_image() -> Path | None:
     return None
 
 
-def reset_assets() -> None:
-    ASSETS_DIR.mkdir(parents=True, exist_ok=True)
-    for path in ASSETS_DIR.iterdir():
+def run_dirs_newest_first() -> list[Path]:
+    return sorted(
+        [path for path in OUTPUTS_DIR.glob("run_*") if path.is_dir()],
+        key=lambda path: path.stat().st_mtime,
+        reverse=True,
+    )
+
+
+def summary_is_successful(summary: dict) -> bool:
+    if summary.get("status") != "completed":
+        return False
+    requested = summary.get("requested_iterations")
+    completed = summary.get("completed_iterations")
+    if requested is not None or completed is not None:
+        return requested == completed and completed not in (None, 0)
+    return True
+
+
+def iteration_dirs(run_dir: Path) -> list[Path]:
+    return sorted([path for path in run_dir.glob("iter_*") if path.is_dir()])
+
+
+def run_has_required_iteration_files(run_dir: Path, summary: dict) -> bool:
+    dirs = iteration_dirs(run_dir)
+    requested = summary.get("requested_iterations")
+    completed = summary.get("completed_iterations")
+    expected_count = completed or requested
+    if expected_count is not None and len(dirs) != int(expected_count):
+        return False
+
+    for folder in dirs:
+        required = [
+            folder / "generated.png",
+            folder / "prompt.txt",
+            folder / "evaluation.json",
+            folder / "next_prompt.txt",
+        ]
+        if any(not path.exists() for path in required):
+            return False
+    return bool(dirs)
+
+
+def latest_successful_run() -> tuple[Path | None, dict | None]:
+    for run_dir in run_dirs_newest_first():
+        summary_path = run_dir / "summary.json"
+        if not summary_path.exists():
+            continue
+        summary = read_json(summary_path)
+        if summary_is_successful(summary) and run_has_required_iteration_files(run_dir, summary):
+            return run_dir, summary
+    return None, None
+
+
+def reset_latest_run_assets() -> None:
+    LATEST_RUN_ASSETS_DIR.mkdir(parents=True, exist_ok=True)
+    for path in LATEST_RUN_ASSETS_DIR.iterdir():
         if path.is_file():
             path.unlink()
 
 
-def copy_asset(source: Path | None, name: str) -> str | None:
+def copy_latest_asset(source: Path | None, name: str) -> str | None:
     if source is None or not source.exists():
         return None
-    shutil.copy2(source, ASSETS_DIR / name)
-    return f"assets/{name}"
+    shutil.copy2(source, LATEST_RUN_ASSETS_DIR / name)
+    return f"assets/latest-run/{name}"
 
 
-def load_run_data() -> RunData:
-    reset_assets()
-    warnings: list[str] = []
-    reference_asset = copy_asset(reference_image(), "original_pomeranian.png")
-    if reference_asset is None:
-        warnings.append("inputs/에서 원본 이미지를 찾지 못했습니다.")
-
-    run_dir = latest_run_dir()
-    if run_dir is None:
-        warnings.append("outputs/run_* 실행 결과가 아직 없습니다.")
-        return RunData(None, None, reference_asset, [], warnings)
-
-    summary_path = run_dir / "summary.json"
-    if not summary_path.exists():
-        warnings.append(f"{run_dir.name}/summary.json 파일이 없습니다.")
-        return RunData(run_dir, None, reference_asset, [], warnings)
-
-    summary = read_json(summary_path)
+def load_successful_run(run_dir: Path, summary: dict) -> RunData:
+    reset_latest_run_assets()
+    reference_asset = copy_latest_asset(reference_image(), "original_pomeranian.png")
     iterations: list[IterationResult] = []
-    for iteration_dir in sorted(run_dir.glob("iter_*")):
-        evaluation_path = iteration_dir / "evaluation.json"
-        next_prompt_path = iteration_dir / "next_prompt.txt"
-        generated_path = iteration_dir / "generated.png"
-        if not evaluation_path.exists() or not next_prompt_path.exists():
-            warnings.append(f"{iteration_dir.name}: 필요한 결과 파일이 부족해서 제외했습니다.")
-            continue
 
-        evaluation = read_json(evaluation_path)
-        iteration_number = int(evaluation.get("iteration", len(iterations) + 1))
-        image_asset = copy_asset(generated_path, f"iter_{iteration_number:03d}_generated.png")
+    for folder in iteration_dirs(run_dir):
+        evaluation = read_json(folder / "evaluation.json")
+        iteration = int(evaluation.get("iteration", len(iterations) + 1))
+        image_asset = copy_latest_asset(folder / "generated.png", f"iter_{iteration:03d}_generated.png")
         if image_asset is None:
-            warnings.append(f"{iteration_dir.name}: generated.png 파일이 없습니다.")
-
+            raise FileNotFoundError(f"{folder}/generated.png")
         iterations.append(
             IterationResult(
-                iteration=iteration_number,
+                iteration=iteration,
                 image_asset=image_asset,
                 evaluation=evaluation,
-                next_prompt=read_text(next_prompt_path),
+                next_prompt=read_text(folder / "next_prompt.txt"),
             )
         )
 
-    return RunData(run_dir, summary, reference_asset, iterations, warnings)
+    return RunData(
+        run_dir=run_dir,
+        summary=summary,
+        reference_asset=reference_asset,
+        iterations=iterations,
+    )
 
 
 def score(value: object) -> float | None:
@@ -151,15 +188,11 @@ def image_box(asset: str | None, label: str, missing: str = "아직 실행 결�
 
 def first_priority(iteration: IterationResult) -> str:
     items = iteration.evaluation.get("priority_differences", [])
-    if not items:
-        return "핵심 수정사항 기록 없음"
-    return str(items[0])
+    return str(items[0]) if items else "핵심 수정사항 기록 없음"
 
 
-def best_iteration(data: RunData) -> IterationResult | None:
-    if not data.iterations:
-        return None
-    summary_best = data.summary.get("best_iteration") if data.summary else None
+def best_iteration(data: RunData) -> IterationResult:
+    summary_best = data.summary.get("best_iteration")
     if summary_best is not None:
         for iteration in data.iterations:
             if iteration.iteration == int(summary_best):
@@ -175,7 +208,6 @@ def result_card(title: str, iteration: IterationResult | None) -> str:
           <div class="no-data">아직 실행 결과 없음</div>
         </div>
         """
-
     ev = iteration.evaluation
     return f"""
     <div class="result-card">
@@ -191,8 +223,6 @@ def result_card(title: str, iteration: IterationResult | None) -> str:
 
 
 def score_rows(iterations: list[IterationResult], key: str) -> str:
-    if not iterations:
-        return '<div class="no-data">아직 실행 결과 없음</div>'
     rows = []
     for iteration in iterations:
         value = score(iteration.evaluation.get(key))
@@ -218,12 +248,6 @@ def pill_list(items: list[str]) -> str:
     ) + "</div>"
 
 
-def warning_html(warnings: list[str]) -> str:
-    if not warnings:
-        return ""
-    return '<div class="notice">' + "<br>".join(escape(w) for w in warnings) + "</div>"
-
-
 def fixed_slides() -> list[str]:
     return [
         """
@@ -238,10 +262,7 @@ def fixed_slides() -> list[str]:
         """,
         """
         <section class="slide spread">
-          <div>
-            <div class="eyebrow">Evolution</div>
-            <h2>AI 시스템 설계의 발전 흐름</h2>
-          </div>
+          <div><div class="eyebrow">Evolution</div><h2>AI 시스템 설계의 발전 흐름</h2></div>
           <div class="evolution">
             <div class="card"><div class="stage-tag">Prompt</div><h3>잘 시키기</h3><p>한 번의 지시를 더 정확하게 만든다.</p></div>
             <div class="card"><div class="stage-tag">Context</div><h3>잘 보여주기</h3><p>AI가 판단할 수 있는 정보를 함께 제공한다.</p></div>
@@ -252,10 +273,7 @@ def fixed_slides() -> list[str]:
         """,
         """
         <section class="slide spread">
-          <div>
-            <div class="eyebrow">Prompt Engineering</div>
-            <h2>AI에게 어떻게 잘 시킬 것인가?</h2>
-          </div>
+          <div><div class="eyebrow">Prompt Engineering</div><h2>AI에게 어떻게 잘 시킬 것인가?</h2></div>
           <div class="flow">
             <div class="node">사람</div><div class="arrow">→</div>
             <div class="node mint">Prompt</div><div class="arrow">→</div>
@@ -267,10 +285,7 @@ def fixed_slides() -> list[str]:
         """,
         """
         <section class="slide spread">
-          <div>
-            <div class="eyebrow">Context Engineering</div>
-            <h2>AI에게 어떤 정보를 보여줄 것인가?</h2>
-          </div>
+          <div><div class="eyebrow">Context Engineering</div><h2>AI에게 어떤 정보를 보여줄 것인가?</h2></div>
           <div class="grid cols-3">
             <div class="card"><h3>사용자 요구</h3><p>이번 작업의 목표와 제약</p></div>
             <div class="card"><h3>이전 대화</h3><p>이미 합의된 방향과 상태</p></div>
@@ -284,10 +299,7 @@ def fixed_slides() -> list[str]:
         """,
         """
         <section class="slide spread">
-          <div>
-            <div class="eyebrow">Harness Engineering</div>
-            <h2>AI가 어떤 환경에서 일하게 할 것인가?</h2>
-          </div>
+          <div><div class="eyebrow">Harness Engineering</div><h2>AI가 어떤 환경에서 일하게 할 것인가?</h2></div>
           <div class="grid cols-3">
             <div class="card"><h3>File System</h3><p>입력과 산출물을 남긴다.</p></div>
             <div class="card"><h3>Git</h3><p>변경을 추적한다.</p></div>
@@ -300,26 +312,16 @@ def fixed_slides() -> list[str]:
         """,
         """
         <section class="slide spread">
-          <div>
-            <div class="eyebrow">Loop Engineering</div>
-            <h2>AI가 결과를 보고 다시 일하게 하려면?</h2>
-          </div>
+          <div><div class="eyebrow">Loop Engineering</div><h2>AI가 결과를 보고 다시 일하게 하려면?</h2></div>
           <div class="loop-cycle">
-            <div class="node">생성</div>
-            <div class="node mint">평가</div>
-            <div class="node violet">피드백</div>
-            <div class="node">수정</div>
-            <div class="node mint">재생성</div>
+            <div class="node">생성</div><div class="node mint">평가</div><div class="node violet">피드백</div><div class="node">수정</div><div class="node mint">재생성</div>
           </div>
           <p class="lead">사람이 하던 반복 개선 과정을 시스템 안에 넣는다.</p>
         </section>
         """,
         """
         <section class="slide spread">
-          <div>
-            <div class="eyebrow">Compare</div>
-            <h2>Harness Engineering vs Loop Engineering</h2>
-          </div>
+          <div><div class="eyebrow">Compare</div><h2>Harness Engineering vs Loop Engineering</h2></div>
           <div class="compare">
             <div class="card"><div class="stage-tag">Harness = 작업 환경</div><h3>AI가 안정적으로 행동할 수 있는 조건</h3><p>도구, 파일, 테스트, 브라우저, 로그를 갖춘 실행 무대다.</p></div>
             <div class="card"><div class="stage-tag">Loop = 반복 과정</div><h3>AI가 결과를 보고 다음 행동을 바꾸는 구조</h3><p>평가, 피드백, 수정, 재생성을 반복하는 개선 흐름이다.</p></div>
@@ -329,10 +331,7 @@ def fixed_slides() -> list[str]:
         """,
         """
         <section class="slide spread">
-          <div>
-            <div class="eyebrow">Demo</div>
-            <h2>이번 데모 소개</h2>
-          </div>
+          <div><div class="eyebrow">Demo</div><h2>이번 데모 소개</h2></div>
           <div class="grid cols-2">
             <div class="card"><h3>입력</h3><p>실제 포메라니안 사진</p></div>
             <div class="card"><h3>첫 결과</h3><p>일부러 매우 단순한 스케치</p></div>
@@ -344,10 +343,7 @@ def fixed_slides() -> list[str]:
         """,
         """
         <section class="slide spread">
-          <div>
-            <div class="eyebrow">Live Transition</div>
-            <h2>이제 직접 돌려보겠습니다</h2>
-          </div>
+          <div><div class="eyebrow">Live Transition</div><h2>이제 직접 돌려보겠습니다</h2></div>
           <div class="flow">
             <div class="node">Original Photo</div><div class="arrow">→</div>
             <div class="node mint">Generator</div><div class="arrow">→</div>
@@ -365,54 +361,25 @@ def fixed_slides() -> list[str]:
 def dynamic_slides(data: RunData) -> list[str]:
     iterations = data.iterations
     best = best_iteration(data)
-    first = next((item for item in iterations if item.iteration == 1), iterations[0] if iterations else None)
-    run_label = data.run_dir.name if data.run_dir else "아직 실행 결과 없음"
-    summary = data.summary or {}
-
-    if not iterations:
-        return [
-            f"""
-            <section class="slide spread">
-              <div>
-                <div class="eyebrow">Results</div>
-                <h2>실험 결과</h2>
-              </div>
-              <div class="no-data">아직 실행 결과 없음</div>
-              {warning_html(data.warnings)}
-            </section>
-            """
-        ]
-
+    first = next((item for item in iterations if item.iteration == 1), iterations[0])
     selected = [next((item for item in iterations if item.iteration == n), None) for n in (1, 3, 5)]
-    if best and best not in selected:
+    if best not in selected:
         selected.append(best)
-
-    result_cards = "".join(result_card(f"Iteration {idx}", item) for idx, item in zip(["1", "3", "5", "Best"], selected))
+    result_cards = "".join(result_card(label, item) for label, item in zip(["Iteration 1", "Iteration 3", "Iteration 5", "Best"], selected))
 
     return [
         f"""
         <section class="slide spread">
-          <div>
-            <div class="eyebrow">Results · {escape(run_label)}</div>
-            <h2>실제 Iteration 결과</h2>
-          </div>
+          <div><div class="eyebrow">Results · {escape(data.run_dir.name)}</div><h2>실제 Iteration 결과</h2></div>
           <div class="result-grid">
-            <div class="result-card">
-              <h3>Original</h3>
-              {image_box(data.reference_asset, "Original Photo", "원본 이미지 없음")}
-              <p class="priority">실제 입력 이미지</p>
-            </div>
+            <div class="result-card"><h3>Original</h3>{image_box(data.reference_asset, "Original Photo", "원본 이미지 없음")}<p class="priority">실제 입력 이미지</p></div>
             {result_cards}
           </div>
-          {warning_html(data.warnings)}
         </section>
         """,
         f"""
         <section class="slide spread">
-          <div>
-            <div class="eyebrow">Scores</div>
-            <h2>점수 변화</h2>
-          </div>
+          <div><div class="eyebrow">Scores</div><h2>점수 변화</h2></div>
           <div class="grid cols-3">
             <div class="card"><h3>Content Similarity</h3>{score_rows(iterations, "content_similarity_score")}</div>
             <div class="card"><h3>Sketch Style</h3>{score_rows(iterations, "sketch_style_score")}</div>
@@ -422,40 +389,31 @@ def dynamic_slides(data: RunData) -> list[str]:
         """,
         f"""
         <section class="slide spread">
-          <div>
-            <div class="eyebrow">Before / After</div>
-            <h2>첫 시도와 best iteration 비교</h2>
-          </div>
+          <div><div class="eyebrow">Before / After</div><h2>첫 시도와 best iteration 비교</h2></div>
           <div class="grid cols-3">
             <div class="result-card"><h3>Original</h3>{image_box(data.reference_asset, "Original", "원본 이미지 없음")}</div>
-            <div class="result-card"><h3>First Iteration</h3>{image_box(first.image_asset if first else None, "First Iteration")}</div>
-            <div class="result-card"><h3>Best Iteration</h3>{image_box(best.image_asset if best else None, "Best Iteration")} {score_metric("overall", best.evaluation.get("overall_score") if best else None)}</div>
+            <div class="result-card"><h3>First Iteration</h3>{image_box(first.image_asset, "First Iteration")}</div>
+            <div class="result-card"><h3>Best Iteration</h3>{image_box(best.image_asset, "Best Iteration")}{score_metric("overall", best.evaluation.get("overall_score"))}</div>
           </div>
         </section>
         """,
         f"""
         <section class="slide spread">
-          <div>
-            <div class="eyebrow">Analysis</div>
-            <h2>결과 분석</h2>
-          </div>
+          <div><div class="eyebrow">Analysis</div><h2>결과 분석</h2></div>
           <div class="grid cols-2">
-            <div class="card"><h3>개선된 부분</h3>{pill_list(best.evaluation.get("matched_points", []) if best else [])}</div>
-            <div class="card"><h3>아직 어려운 부분</h3>{pill_list(best.evaluation.get("differences", []) if best else [])}</div>
+            <div class="card"><h3>개선된 부분</h3>{pill_list(best.evaluation.get("matched_points", []))}</div>
+            <div class="card"><h3>아직 어려운 부분</h3>{pill_list(best.evaluation.get("differences", []))}</div>
           </div>
           <p class="lead">점수는 항상 증가하지 않을 수 있다. Loop의 장점은 실제 결과를 보고 다음 시도를 좁히는 데 있다.</p>
         </section>
         """,
         f"""
         <section class="slide spread">
-          <div>
-            <div class="eyebrow">Run Summary</div>
-            <h2>최신 run 요약</h2>
-          </div>
+          <div><div class="eyebrow">Run Summary</div><h2>최신 run 요약</h2></div>
           <div class="grid cols-3">
-            <div class="card"><div class="stage-tag">status</div><h3>{escape(str(summary.get("status", "N/A")))}</h3></div>
-            <div class="card"><div class="stage-tag">stop reason</div><h3>{escape(str(summary.get("stop_reason", "N/A")))}</h3></div>
-            <div class="card"><div class="stage-tag">best iteration</div><h3>{escape(str(summary.get("best_iteration", best.iteration if best else "N/A")))}</h3></div>
+            <div class="card"><div class="stage-tag">status</div><h3>{escape(str(data.summary.get("status", "N/A")))}</h3></div>
+            <div class="card"><div class="stage-tag">stop reason</div><h3>{escape(str(data.summary.get("stop_reason", "N/A")))}</h3></div>
+            <div class="card"><div class="stage-tag">best iteration</div><h3>{escape(str(data.summary.get("best_iteration", best.iteration)))}</h3></div>
           </div>
         </section>
         """,
@@ -483,21 +441,23 @@ def build_html(data: RunData) -> str:
 """
 
 
-def build_presentation() -> RunData:
+def build_presentation() -> BuildResult:
+    run_dir, summary = latest_successful_run()
+    if run_dir is None or summary is None:
+        return BuildResult(False, None, 0, "no successful complete run found")
+
     PRESENTATION_DIR.mkdir(parents=True, exist_ok=True)
-    data = load_run_data()
+    data = load_successful_run(run_dir, summary)
     INDEX_PATH.write_text(build_html(data), encoding="utf-8")
-    return data
+    return BuildResult(True, run_dir, len(data.iterations), "presentation updated")
 
 
 def main() -> None:
-    data = build_presentation()
-    print(f"Built {INDEX_PATH}")
-    print(f"Latest run: {data.run_dir if data.run_dir else 'none'}")
-    print(f"Summary loaded: {bool(data.summary)}")
-    print(f"Iterations included: {len(data.iterations)}")
-    for warning in data.warnings:
-        print(f"Warning: {warning}")
+    result = build_presentation()
+    print(f"Updated: {result.updated}")
+    print(f"Run: {result.run_dir if result.run_dir else 'none'}")
+    print(f"Iterations included: {result.iterations}")
+    print(f"Reason: {result.reason}")
 
 
 if __name__ == "__main__":
