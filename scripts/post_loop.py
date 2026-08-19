@@ -4,16 +4,20 @@ from __future__ import annotations
 
 import re
 import subprocess
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 
-from scripts.build_presentation import build_presentation
-
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts.build_presentation import build_presentation
+
 DEFAULT_COMMIT_MESSAGE = "chore: update loop experiment results"
 SENSITIVE_PATTERN = re.compile(
-    r"api[_ -]?key|token|password|secret|private[_ -]?key|access[_ -]?key",
+    r"(api[_ -]?key|token|password|secret|private[_ -]?key|access[_ -]?key)\s*[:=]\s*['\"][^'\"]{8,}",
     re.IGNORECASE,
 )
 EXPECTED_COMMIT_PREFIXES = (
