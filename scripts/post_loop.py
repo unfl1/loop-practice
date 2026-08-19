@@ -21,6 +21,7 @@ SENSITIVE_PATTERN = re.compile(
     re.IGNORECASE,
 )
 EXPECTED_COMMIT_PREFIXES = (
+    ".env.example",
     ".gitignore",
     "AGENTS.md",
     "README.md",
