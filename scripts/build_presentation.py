@@ -72,7 +72,10 @@ def score_text(value: object) -> str:
 
 def pct(value: object) -> int:
     number = score(value)
-    return 0 if number is None else max(0, min(100, round(number * 100)))
+    if number is None:
+        return 0
+    normalized = number * 100 if number <= 1 else number
+    return max(0, min(100, round(normalized)))
 
 
 def reference_image() -> Path | None:
@@ -320,7 +323,8 @@ def line_chart_from_values(values: list[float | None], label: str) -> str:
 
     def xy(index: int, value: float) -> tuple[float, float]:
         x = pad_x + usable_w * (index / max_index)
-        y = pad_y + usable_h * (1 - max(0, min(1, value)))
+        normalized = value if value <= 1 else value / 100
+        y = pad_y + usable_h * (1 - max(0, min(1, normalized)))
         return x, y
 
     polyline = " ".join(f"{x:.1f},{y:.1f}" for x, y in (xy(i, v) for i, v in points))
@@ -344,13 +348,11 @@ def score_rows(iterations: list[IterationResult], value_getter) -> str:
     for item in iterations:
         value = value_getter(item)
         rows.append(
-            f"""
-            <div class="chart-row">
+            f"""<div class="chart-row">
               <span>Iter {item.iteration}</span>
               <div class="track"><i style="width:{pct(value)}%"></i></div>
               <b>{score_text(value)}</b>
-            </div>
-            """
+            </div>"""
         )
     return '<div class="chart">' + "".join(rows) + "</div>"
 
@@ -396,7 +398,7 @@ def run_payload(data: RunData) -> dict:
     }
 
 
-def fixed_slides() -> list[str]:
+def fixed_slides_legacy() -> list[str]:
     return [
         """
         <section class="slide title-slide center">
@@ -512,6 +514,94 @@ def fixed_slides() -> list[str]:
     ]
 
 
+def fixed_slides_v2() -> list[str]:
+    """Return the durable theory chapters; only result chapters are run-driven."""
+    return [
+        """
+        <section class="slide title-slide center">
+          <div class="title-mark">Loop</div>
+          <div><p class="eyebrow">AI System Design</p><h1>Loop Engineering</h1>
+          <p class="title-sub">한 번 잘 시키는 것에서,<br>결과가 다음 실행을 바꾸는 구조로</p></div>
+        </section>
+        """,
+        """
+        <section class="slide spread evolution-slide">
+          <header><p class="eyebrow">Expansion Map</p><h2>Prompt → Context → Harness → Loop</h2></header>
+          <p class="lead">공식적인 역사나 우열이 아니라, AI에게 맡기는 범위를 넓힐 때 추가되는 설계 관점입니다.</p>
+          <div class="evolution">
+            <article class="phase"><b>01 · Prompt</b><h3>어떻게 지시할까?</h3><p>역할, 목표, 제약과 출력 형식을 설계해 해야 할 일을 분명하게 만듭니다.</p><em>없는 정보까지 제공하지는 못합니다.</em></article>
+            <article class="phase"><b>02 · Context</b><h3>무엇을 보여줄까?</h3><p>문서, 대화, 코드와 현재 상태처럼 판단에 필요한 정보를 제공합니다.</p><em>정보만으로 실제 행동할 수는 없습니다.</em></article>
+            <article class="phase"><b>03 · Harness</b><h3>어디서 일하게 할까?</h3><p>파일, Git, 테스트, 로그와 권한을 연결해 작업과 관찰을 가능하게 합니다.</p><em>한 번의 행동이 자동 개선을 뜻하지는 않습니다.</em></article>
+            <article class="phase"><b>04 · Loop</b><h3>무엇을 다시 하게 할까?</h3><p>평가와 피드백을 다음 입력에 반영해 반복이 개선을 만들게 합니다.</p><em>평가가 다음 실행을 실제로 바꿉니다.</em></article>
+          </div>
+          <div class="callout">Prompt는 방향, Context는 판단 재료, Harness는 행동 공간, Loop는 결과 이후의 다음 행동을 설계합니다.</div>
+        </section>
+        """,
+        """
+        <section class="slide spread concept-slide">
+          <header><p class="eyebrow">Prompt Engineering</p><h2>AI에게 어떻게 잘 시킬 것인가?</h2></header>
+          <div class="question">핵심 질문 · “AI에게 무엇을, 어떤 조건으로 수행하라고 말할 것인가?”</div>
+          <div class="narrative cols-2">
+            <article><h3>무엇인가</h3><p>Prompt Engineering은 AI가 원하는 방향으로 응답하도록 지시문의 구조와 표현을 설계하는 접근입니다. 역할, 목표, 배경, 제약조건, 출력 형식과 예시를 조합해 해야 할 일을 명확하게 만듭니다.</p></article>
+            <article><h3>왜 필요한가</h3><p>지시가 모호하면 같은 모델도 서로 다른 결과를 냅니다. 좋은 Prompt는 성공 기준과 작업 경계를 선명하게 해 불필요한 추측을 줄이고 결과의 일관성을 높입니다.</p></article>
+          </div>
+          <div class="flow big-flow"><div class="node">Human</div><div class="arrow">→</div><div class="node mint">Prompt</div><div class="arrow">→</div><div class="node violet">AI</div><div class="arrow">→</div><div class="node">Result</div><div class="arrow">→</div><div class="node">판단·수정</div><div class="arrow">↺</div></div>
+          <div class="callout">한계 · Prompt는 행동 방향을 바꾸지만 모델에게 없는 정보를 만들어 주지는 않습니다. 결과가 부족하면 사람이 직접 판단하고 Prompt를 다시 고쳐야 합니다.</div>
+        </section>
+        """,
+        """
+        <section class="slide spread concept-slide">
+          <header><p class="eyebrow">Context Engineering</p><h2>AI가 판단할 때 무엇을 보여줄 것인가?</h2></header>
+          <div class="question">핵심 질문 · “이 판단을 정확히 하려면 지금 어떤 정보를 함께 제공해야 하는가?”</div>
+          <div class="narrative cols-2">
+            <article><h3>Prompt와의 차이</h3><p>Prompt는 AI에게 무엇을 하라고 말하는 지시입니다. Context는 그 지시를 수행할 때 참고하는 사용자 요구, 이전 대화, 문서, 코드, 검색 결과, 메모리와 현재 상태입니다.</p></article>
+            <article><h3>해결하는 문제</h3><p>Context가 빠지면 기존 요구를 놓치거나 잘못된 가정을 하고 현재 프로젝트와 맞지 않는 답을 만들 수 있습니다. 같은 Prompt도 무엇을 함께 보여주느냐에 따라 판단 품질이 달라집니다.</p></article>
+          </div>
+          <div class="context-map"><div class="center-node">AI</div><span>사용자 요구</span><span>이전 대화</span><span>참고 문서</span><span>검색 결과</span><span>메모리</span><span>코드</span><span>현재 상태</span><span>Tool 결과</span></div>
+          <div class="callout">관점은 “어떻게 말할까?”에서 “무엇을 알고 판단하게 할까?”로 넓어집니다. 그러나 충분히 알아도 행동할 환경이 없다면 작업 범위는 제한됩니다.</div>
+        </section>
+        """,
+        """
+        <section class="slide spread concept-slide harness-slide">
+          <header><p class="eyebrow">Harness Engineering</p><h2>AI가 어떤 환경에서 실제로 일하게 할 것인가?</h2></header>
+          <div class="question">핵심 질문 · “AI에게 어떤 도구, 관찰 수단과 권한을 가진 작업 환경을 줄 것인가?”</div>
+          <div class="narrative cols-2">
+            <article><h3>답변에서 행동으로</h3><p>Harness Engineering은 AI가 텍스트를 생성하는 데서 끝나지 않고 실제 작업을 수행하고 그 결과를 관찰하도록 주변 실행 환경을 설계하는 것입니다. Prompt와 Context를 현실의 행동으로 연결합니다.</p></article>
+            <article><h3>검증 가능한 작업</h3><p>파일 저장, 테스트 실행, 브라우저 확인, 로그 분석과 버전 관리를 연결하면 실행 결과를 근거로 다음 결정을 내릴 수 있습니다. 권한은 가능한 행동의 범위와 안전 경계를 정합니다.</p></article>
+          </div>
+          <div class="harness-shell"><div class="agent-core">AI Agent</div><div class="tool-ring"><span>Tools · 실행 행동</span><span>File System · 읽기/수정</span><span>Git · 변경 이력</span><span>Test · 결과 검증</span><span>Logs · 실패 관찰</span><span>Browser · 화면 확인</span><span>Permissions · 행동 경계</span><span>Execution · 코드 실행</span></div></div>
+          <div class="flow agent-flow"><div class="node">코드 작성</div><div class="arrow">→</div><div class="node">파일 저장</div><div class="arrow">→</div><div class="node mint">테스트</div><div class="arrow">→</div><div class="node violet">로그 확인</div><div class="arrow">→</div><div class="node">코드 수정</div></div>
+          <div class="callout">Harness는 Loop의 기반이 됩니다. Evaluator가 테스트와 로그를 읽어 다음 행동을 결정하려면 결과를 실제로 관찰할 수 있어야 하기 때문입니다.</div>
+        </section>
+        """,
+        """
+        <section class="slide spread concept-slide loop-slide">
+          <header><p class="eyebrow">Loop Engineering</p><h2>평가 결과가 다음 실행을 바꾸게 하려면?</h2></header>
+          <p class="lead">Loop Engineering은 같은 작업을 여러 번 실행하는 것이 아니라, 이전 실행을 평가하고 그 결과가 다음 실행의 입력을 바꾸도록 반복 구조 자체를 설계하는 것입니다.</p>
+          <div class="loop-diagram"><div class="node">Goal</div><div class="arrow">→</div><div class="node mint">Generator</div><div class="arrow">→</div><div class="node">Result</div><div class="arrow">→</div><div class="node violet">Evaluator</div><div class="arrow">→</div><div class="node">Feedback</div><div class="arrow">→</div><div class="node mint">Refiner</div><div class="arrow">↺</div></div>
+          <div class="loop-elements"><article><b>Goal</b><p>개선 목표</p></article><article><b>Generator / Actor</b><p>생성과 행동</p></article><article><b>Evaluator</b><p>목표와 비교</p></article><article><b>Feedback</b><p>차이 전달</p></article><article><b>Refiner</b><p>다음 지시 변환</p></article><article><b>State</b><p>결과와 iteration 유지</p></article><article><b>Stop Condition</b><p>목표·횟수·비용</p></article><article><b>Best Result</b><p>최고 결과 보존</p></article></div>
+          <div class="repeat-compare"><article><h3>단순 반복</h3><p>같은 Prompt → 실행 → 같은 Prompt → 실행</p><em>결과가 다음 입력을 바꾸지 않습니다.</em></article><article><h3>Loop Engineering</h3><p>실행 → 평가 → Feedback → Prompt 변경 → 재실행</p><em>핵심은 횟수가 아니라 피드백의 영향입니다.</em></article></div>
+        </section>
+        """,
+        """
+        <section class="slide spread relationship-slide">
+          <header><p class="eyebrow">Harness vs Loop</p><h2>작업 환경과 반복 구조는 다른 질문에 답합니다</h2></header>
+          <div class="compare narrative"><article><h3>Harness Engineering</h3><p>AI가 사용할 도구, 파일 접근, 테스트, 로그, 실행 환경과 권한을 설계합니다. 핵심 질문은 “AI에게 어떤 작업 환경을 줄 것인가?”입니다.</p><ul><li>무엇을 실행하고 관찰할 수 있는가?</li><li>어떤 권한과 안전 경계를 가지는가?</li></ul></article><article><h3>Loop Engineering</h3><p>결과 이후 평가, Feedback, 상태 유지, 종료 조건과 최고 결과 보존을 설계합니다. 핵심 질문은 “결과 이후 무엇을 다시 하게 할 것인가?”입니다.</p><ul><li>무엇을 다음 실행에 전달하는가?</li><li>언제 멈추고 무엇을 기억하는가?</li></ul></article></div>
+          <div class="harness-boundary"><span>Harness Environment</span><div class="flow"><div class="node mint">Generator</div><div class="arrow">→</div><div class="node violet">Evaluator</div><div class="arrow">→</div><div class="node">Refiner</div><div class="arrow">↺</div></div><p>Harness가 작업 기반을 제공하고, 그 환경 안에서 Loop가 결과를 관찰하며 다음 행동을 결정합니다.</p></div>
+        </section>
+        """,
+        """
+        <section class="slide spread demo-intro-slide">
+          <header><p class="eyebrow">Demo Transition</p><h2>Loop를 반복하면 실제로 목표에 더 가까워질까?</h2></header>
+          <div class="narrative cols-2"><article><h3>왜 이 실험인가</h3><p>실제 포메라니안 사진을 고정 원본으로 두고 첫 결과는 일부러 단순한 손그림으로 제한합니다. 형태 차이가 분명해 평가와 피드백이 다음 결과를 어떻게 바꾸는지 관찰하기 좋습니다.</p></article><article><h3>무엇을 검증하는가</h3><p>이미지 모델의 절대 성능을 자랑하려는 것이 아닙니다. Evaluator가 찾은 구조적 차이를 Prompt Refiner가 다음 입력에 반영할 때 실제 결과가 어떻게 달라지는지 확인합니다.</p></article></div>
+          <div class="flow demo-flow"><div class="node">Original Photo</div><div class="arrow">→</div><div class="node mint">Generator</div><div class="arrow">→</div><div class="node">Simple Sketch</div><div class="arrow">→</div><div class="node violet">Evaluator</div><div class="arrow">→</div><div class="node">Feedback</div><div class="arrow">→</div><div class="node mint">Prompt Refiner</div><div class="arrow">↺</div></div>
+          <div class="demo-goals"><article><b>Generate</b><p>매 iteration 후보 3장을 생성합니다.</p></article><article><b>Evaluate</b><p>원본과 구조적 차이를 독립 평가합니다.</p></article><article><b>Select</b><p>현재 최고 후보를 선택합니다.</p></article><article><b>Remember</b><p>Best-so-far를 다음 기준으로 보존합니다.</p></article></div>
+          <div class="callout">관찰 포인트 · 반복 횟수가 아니라 평가 결과가 실제 다음 Prompt와 생성 결과에 반영되는지를 봅니다.</div>
+        </section>
+        """,
+    ]
+
+
 def result_card(item: IterationResult, label: str) -> str:
     return f"""
     <article class="result-card">
@@ -560,10 +650,10 @@ def dynamic_slides(data: RunData) -> list[str]:
                 </article>
               </div>
               <div class="timeline-metrics">
-                <div>{metric("iteration", 0)}</div>
-                <div>{metric("best", 0)}</div>
-                <div>{metric("shape", 0)}</div>
-                <div>{metric("style", 0)}</div>
+                <div>{metric("overall", 0)}</div>
+                <div>{metric("best-so-far", 0)}</div>
+                <div>{metric("structure", 0)}</div>
+                <div>{metric("sketch style", 0)}</div>
               </div>
             </section>
           </div>
@@ -575,6 +665,7 @@ def dynamic_slides(data: RunData) -> list[str]:
           <div class="timeline-details">
             <article><h3>Selection</h3><div id="timeline-selection"></div></article>
             <article><h3>Priority Differences</h3><div id="timeline-priority"></div></article>
+            <article><h3>Feedback</h3><div id="timeline-feedback"></div></article>
             <article><h3>Next Prompt</h3><pre id="timeline-prompt"></pre></article>
           </div>
         </section>
@@ -640,7 +731,7 @@ def no_data_slides(reason: str) -> list[str]:
 
 
 def build_html(data: RunData | None, reason: str = "no successful complete run found") -> str:
-    slides = fixed_slides() + (dynamic_slides(data) if data else no_data_slides(reason))
+    slides = fixed_slides_v2() + (dynamic_slides(data) if data else no_data_slides(reason))
     payload = run_payload(data) if data else {"runName": None, "referenceAsset": None, "summary": {}, "iterations": []}
     data_json = json.dumps(payload, ensure_ascii=False).replace("</", "<\\/")
     return f"""<!doctype html>

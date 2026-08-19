@@ -25,20 +25,12 @@ function scrollToSlide(index) {
 }
 
 function nearestSlideIndex() {
-  const viewportAnchor = window.scrollY + window.innerHeight * 0.28;
-  let nearest = 0;
-  let smallestDistance = Number.POSITIVE_INFINITY;
-
+  const anchor = window.scrollY + Math.min(window.innerHeight * 0.32, 260);
+  let visibleSection = 0;
   slides.forEach((slide, index) => {
-    const top = slide.offsetTop;
-    const distance = Math.abs(top - viewportAnchor);
-    if (distance < smallestDistance) {
-      smallestDistance = distance;
-      nearest = index;
-    }
+    if (slide.offsetTop <= anchor) visibleSection = index;
   });
-
-  return nearest;
+  return visibleSection;
 }
 
 function syncCurrentSlide() {
@@ -81,7 +73,8 @@ function scoreText(value) {
 function scoreWidth(value) {
   const number = Number(value);
   if (!Number.isFinite(number)) return 0;
-  return Math.max(0, Math.min(100, Math.round(number * 100)));
+  const normalized = number <= 1 ? number * 100 : number;
+  return Math.max(0, Math.min(100, Math.round(normalized)));
 }
 
 function renderMetric(container, label, value) {
@@ -139,6 +132,7 @@ function initTimeline() {
   const overall = document.getElementById("timeline-overall");
   const selection = document.getElementById("timeline-selection");
   const priority = document.getElementById("timeline-priority");
+  const feedback = document.getElementById("timeline-feedback");
   const prompt = document.getElementById("timeline-prompt");
   const metricSlots = Array.from(document.querySelectorAll(".timeline-metrics > div"));
 
@@ -159,12 +153,13 @@ function initTimeline() {
     }
     overall.textContent = `iteration ${scoreText(item.iterationScore)}`;
 
-    renderMetric(metricSlots[0], "iteration", item.iterationScore);
-    renderMetric(metricSlots[1], "best", item.bestSoFarScore);
-    renderMetric(metricSlots[2], "shape", candidate.shape_similarity_score ?? evaluation.content_similarity_score);
-    renderMetric(metricSlots[3], "style", candidate.sketch_style_score ?? evaluation.sketch_style_score);
+    renderMetric(metricSlots[0], "overall", item.iterationScore);
+    renderMetric(metricSlots[1], "best-so-far", item.bestSoFarScore);
+    renderMetric(metricSlots[2], "structure", candidate.shape_similarity_score ?? evaluation.content_similarity_score);
+    renderMetric(metricSlots[3], "sketch style", candidate.sketch_style_score ?? evaluation.sketch_style_score);
     renderSelection(selection, item);
     renderPriority(priority, evaluation.priority_differences || []);
+    renderPriority(feedback, evaluation.suggestions || []);
     prompt.textContent = item.nextPrompt || "기록된 next_prompt가 없습니다.";
   }
 
