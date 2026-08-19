@@ -13,15 +13,16 @@ from scripts.post_loop import run_post_loop
 ROOT = Path(__file__).resolve().parent
 INPUT_IMAGE = ROOT / "inputs" / "pomeranian.png"
 OUTPUTS_DIR = ROOT / "outputs"
+BEST_OF_N_SCHEMA_VERSION = "best_of_n_v1"
 INITIAL_PROMPT = (
     "Create an intentionally very simple hand-drawn black line doodle of the "
-    "reference Pomeranian puppy on a plain white background. Use primitive "
-    "shapes only: a large round head, tiny seated body, simple triangle ears, "
-    "dot eyes, small oval nose, two line front legs, tiny side paws. Keep the "
-    "centered front-facing seated composition. Make it look like a quick "
-    "childlike sketch or napkin doodle, not polished. No realistic fur, no "
-    "advanced shading, no digital painting, no 3D rendering, no color, no "
-    "text, no watermark."
+    "reference Pomeranian puppy on a plain white background. Generate three "
+    "candidate sketches with primitive shapes only: a large round head, tiny "
+    "seated body, simple rounded-triangle ears, dot eyes, small oval nose, "
+    "two short front paws, and tiny side paws. Keep the centered front-facing "
+    "seated composition. Make each candidate a quick childlike sketch or "
+    "napkin doodle, not polished. No realistic fur, no advanced shading, no "
+    "digital painting, no 3D rendering, no color, no text, no watermark."
 )
 
 
@@ -35,6 +36,7 @@ class RunPlan:
     end_iteration: int
     current_prompt: str
     continuing_existing_run: bool
+    schema_version: str = BEST_OF_N_SCHEMA_VERSION
 
 
 def read_json(path: Path) -> dict:
@@ -51,28 +53,40 @@ def summary_is_successful(summary: dict) -> bool:
     return requested == completed and completed not in (None, 0)
 
 
+def summary_uses_best_of_n(summary: dict) -> bool:
+    """Return whether a summary belongs to the new Best-of-N schema."""
+    return summary.get("schema_version") == BEST_OF_N_SCHEMA_VERSION
+
+
 def iteration_number(iteration_dir: Path) -> int:
-    """Extract the numeric suffix from an iter_XXX directory."""
+    """Extract the numeric suffix from an iteration directory."""
     return int(iteration_dir.name.split("_", 1)[1])
 
 
 def iteration_dirs(run_dir: Path) -> list[Path]:
-    """Return iteration directories ordered by their numeric iteration number."""
+    """Return Best-of-N iteration directories ordered by number."""
     return sorted(
-        [path for path in run_dir.glob("iter_*") if path.is_dir()],
+        [path for path in run_dir.glob("iteration_*") if path.is_dir()],
         key=iteration_number,
     )
 
 
 def run_has_required_iteration_files(run_dir: Path, summary: dict) -> bool:
-    """Check that every completed iteration has the required saved outputs."""
+    """Check that every completed Best-of-N iteration has required outputs."""
+    if not summary_uses_best_of_n(summary):
+        return False
+
     dirs = iteration_dirs(run_dir)
     expected_count = int(summary.get("completed_iterations") or 0)
     if not dirs or len(dirs) != expected_count:
         return False
+
     for folder in dirs:
         required = (
-            folder / "generated.png",
+            folder / "candidate_01.png",
+            folder / "candidate_02.png",
+            folder / "candidate_03.png",
+            folder / "selected.png",
             folder / "prompt.txt",
             folder / "evaluation.json",
             folder / "next_prompt.txt",
@@ -83,7 +97,7 @@ def run_has_required_iteration_files(run_dir: Path, summary: dict) -> bool:
 
 
 def latest_successful_run() -> Path | None:
-    """Find the newest complete successful run that can be continued."""
+    """Find the newest complete successful Best-of-N run that can continue."""
     candidates = sorted(
         [path for path in OUTPUTS_DIR.glob("run_*") if path.is_dir()],
         key=lambda path: path.stat().st_mtime,
@@ -100,7 +114,7 @@ def latest_successful_run() -> Path | None:
 
 
 def create_run_dir() -> Path:
-    """Create a new run directory for explicit new-run requests."""
+    """Create a new Best-of-N run directory."""
     OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
     run_dir = OUTPUTS_DIR / f"run_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
     run_dir.mkdir()
@@ -108,12 +122,12 @@ def create_run_dir() -> Path:
 
 
 def prepare_run_plan(additional_iterations: int, *, force_new_run: bool = False) -> RunPlan:
-    """Resolve whether to continue the latest run or start a new run.
+    """Resolve whether to continue a Best-of-N run or start a new one.
 
     Short commands such as "루프 5번해" should call this with
     `additional_iterations=5` and `force_new_run=False`. The plan continues the
-    latest successful run when available. Use `force_new_run=True` only when the
-    user explicitly asks to start a new run.
+    latest successful Best-of-N run when available. Legacy single-image runs are
+    preserved but are not continued under the new strategy.
     """
     if additional_iterations <= 0:
         raise ValueError("additional_iterations must be greater than zero")
@@ -151,22 +165,17 @@ def prepare_run_plan(additional_iterations: int, *, force_new_run: bool = False)
 def run_loop(additional_iterations: int, *, force_new_run: bool = False) -> Path | None:
     """Placeholder for the future Loop execution logic.
 
-    The implementation should call `prepare_run_plan()` first, execute only the
-    requested additional iterations, and return the completed cumulative run
-    directory only after every requested iteration is saved successfully.
+    The implementation should call `prepare_run_plan()` first, generate three
+    candidates per requested iteration, select `selected.png`, maintain
+    Best-so-far, and return the completed cumulative run directory only after
+    every requested iteration is saved successfully.
     """
     _plan = prepare_run_plan(additional_iterations, force_new_run=force_new_run)
     return None
 
 
 def main() -> None:
-    """CLI placeholder.
-
-    The current demo is driven by Codex as the execution actor. When real CLI
-    loop execution is added, call `run_loop()` with the requested additional
-    iteration count and run post-loop work only after it returns a completed
-    run directory.
-    """
+    """CLI placeholder for future non-Codex execution."""
     completed_run = None
     if completed_run is not None:
         run_post_loop()

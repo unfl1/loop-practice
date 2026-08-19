@@ -1,21 +1,25 @@
 # Prompt Refiner
 
-The Prompt Refiner converts the Evaluator result into the next generation prompt.
+The Prompt Refiner converts the selected candidate evaluation into the next generation prompt.
 
 ## Inputs
 
 - Current prompt.
-- Evaluator result.
-- Current iteration number.
+- Current selected candidate evaluation.
+- Current Best-so-far result.
+- Current cumulative iteration number.
 
 ## Output
 
-- Next prompt for the following iteration.
+- `next_prompt.txt` for the following iteration.
 
 ## Core Rules
 
-- Reflect only the Evaluator's `priority_differences`.
+- Reflect only the selected candidate's `priority_differences`.
+- Do not mix in issues from unselected candidates.
+- Prioritize the lowest structural score categories first.
 - Preserve elements listed as already matching unless they conflict with a higher-priority correction.
+- Use the current Best-so-far result as the next iteration baseline.
 - Keep the prompt focused and concise.
 - Do not let the prompt grow with unnecessary repeated instructions.
 - Do not add realistic fur detail, advanced shading, digital painting language, 3D rendering language, or high-detail illustration language.
@@ -45,7 +49,8 @@ Iterations 5 and later:
 The next prompt should:
 
 - Name the simple sketch style clearly.
-- Mention the selected structural changes.
+- Say that the current Best-so-far image is the baseline.
+- Mention only the selected structural changes.
 - Keep the existing successful traits.
 - Avoid asking for high realism or polished rendering.
 - Stay short enough to make each iteration's intent easy to explain during a presentation.

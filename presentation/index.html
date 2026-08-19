@@ -30,11 +30,18 @@
         </section>
         
         <section class="slide spread">
-          <header><p class="eyebrow">Prompt Engineering</p><h2>AI에게 어떻게 잘 시킬 것인가?</h2></header>
-          <div class="explain">
-            <p>원하는 결과를 얻기 위해 역할, 목표, 제약조건, 출력 형식, 예시를 지시문 안에 설계한다.</p>
-            <p>좋은 Prompt는 한 번의 AI 호출 품질을 크게 바꾸지만, 결과 판단과 재작성은 여전히 사람에게 남는다.</p>
+          <header><p class="eyebrow">Loop Upgrade</p><h2>Best-of-N + Best-so-far</h2></header>
+          <div class="flow big-flow">
+            <div class="node mint">3 Candidates</div><div class="arrow">→</div>
+            <div class="node violet">Independent Evaluation</div><div class="arrow">→</div>
+            <div class="node">Selected</div><div class="arrow">→</div>
+            <div class="node mint">Best-so-far</div><div class="arrow">↺</div>
           </div>
+          <div class="callout">현재 iteration은 흔들릴 수 있지만, 전체 Best-so-far는 실제로 관측된 최고 결과를 유지한다.</div>
+        </section>
+        
+        <section class="slide spread">
+          <header><p class="eyebrow">Prompt Engineering</p><h2>AI에게 어떻게 잘 시킬 것인가?</h2></header>
           <div class="flow big-flow">
             <div class="node">사람</div><div class="arrow">→</div>
             <div class="node mint">Prompt</div><div class="arrow">→</div>
@@ -46,10 +53,6 @@
         
         <section class="slide spread">
           <header><p class="eyebrow">Context Engineering</p><h2>AI가 판단하도록 무엇을 보여줄 것인가?</h2></header>
-          <div class="explain">
-            <p>Prompt가 지시문 자체를 다룬다면, Context는 모델이 판단할 때 필요한 주변 정보를 설계한다.</p>
-            <p>정보가 부족하면 좋은 지시문이 있어도 모델은 파일, 상태, 이전 결정, 참고자료를 알 수 없다.</p>
-          </div>
           <div class="context-map">
             <div class="center-node">AI</div>
             <span>사용자 요구</span><span>이전 대화</span><span>참고 문서</span><span>검색 결과</span>
@@ -60,10 +63,6 @@
         
         <section class="slide spread">
           <header><p class="eyebrow">Harness Engineering</p><h2>AI가 어떤 환경에서 일하게 할 것인가?</h2></header>
-          <div class="explain">
-            <p>Harness는 AI Agent가 실제 작업을 수행하고 결과를 확인할 수 있는 실행 무대다.</p>
-            <p>파일을 고치고, 테스트를 돌리고, 로그를 읽고, 브라우저에서 결과를 보는 행동이 가능해진다.</p>
-          </div>
           <div class="harness-shell">
             <div class="agent-core">AI Agent</div>
             <div class="tool-ring">
@@ -71,65 +70,51 @@
               <span>API</span><span>Logs</span><span>Tools</span><span>Permissions</span>
             </div>
           </div>
-          <p class="lead">Prompt가 “무엇을 할지”를 알려준다면, Harness는 “어디서, 어떤 도구와 규칙으로 일할지”를 제공한다.</p>
+          <p class="lead">Harness는 AI가 실제로 작업하고 결과를 확인할 수 있는 실행 무대다.</p>
         </section>
         
         <section class="slide spread">
           <header><p class="eyebrow">Loop Engineering</p><h2>결과를 보고 AI가 다시 일하게 하려면?</h2></header>
-          <div class="explain">
-            <p>Loop는 같은 작업을 무작정 여러 번 돌리는 것이 아니다.</p>
-            <p>이전 결과를 평가하고, 그 평가가 다음 실행의 입력을 바꾸도록 설계하는 구조다.</p>
-          </div>
           <div class="loop-diagram">
-            <div class="node">Goal</div><div class="arrow">→</div>
+            <div class="node">Best Result</div><div class="arrow">→</div>
             <div class="node mint">Generator</div><div class="arrow">→</div>
-            <div class="node">Result</div><div class="arrow">→</div>
+            <div class="node">Candidates</div><div class="arrow">→</div>
             <div class="node violet">Evaluator</div><div class="arrow">→</div>
             <div class="node">Feedback</div><div class="arrow">→</div>
             <div class="node mint">Refiner</div><div class="arrow">↺</div>
           </div>
-          <div class="callout">Loop Engineering은 여러 번 실행하는 것이 아니라, 이전 결과의 평가가 다음 실행의 입력을 바꾸는 구조다.</div>
+          <div class="callout">이전 최고 결과를 기준으로 다시 생성하기 때문에 수렴이 더 안정적이다.</div>
         </section>
         
         <section class="slide spread">
-          <header><p class="eyebrow">Compare</p><h2>Harness Engineering vs Loop Engineering</h2></header>
-          <div class="compare">
-            <article class="card"><p class="stage-tag">Harness = 작업 환경</p><h3>AI가 일할 수 있게 만든다</h3><ul><li>Tools</li><li>File System</li><li>Test / Browser / Logs</li><li>Permissions</li></ul></article>
-            <article class="card"><p class="stage-tag">Loop = 반복 과정</p><h3>AI가 결과를 바탕으로 계속 개선하게 만든다</h3><ul><li>Evaluation</li><li>Feedback</li><li>Retry</li><li>Best Result</li></ul></article>
-          </div>
-          <div class="relationship">Harness 위에서 Loop가 동작한다.</div>
-        </section>
-        
-        <section class="slide spread">
-          <header><p class="eyebrow">Demo Question</p><h2>Loop를 실제로 만들면 결과가 정말 개선될까?</h2></header>
+          <header><p class="eyebrow">Demo Question</p><h2>단순 스케치 스타일을 유지하면서 더 안정적으로 수렴할 수 있을까?</h2></header>
           <div class="demo-goals">
             <article><b>Input</b><p>실제 포메라니안 사진</p></article>
-            <article><b>Start</b><p>일부러 단순한 스케치</p></article>
-            <article><b>Evaluate</b><p>원본과 구조 차이 비교</p></article>
-            <article><b>Refine</b><p>다음 prompt에 일부만 반영</p></article>
+            <article><b>Generate</b><p>후보 3장</p></article>
+            <article><b>Select</b><p>iteration best</p></article>
+            <article><b>Keep</b><p>best-so-far</p></article>
           </div>
-          <p class="lead">스케치 스타일은 유지하면서 얼굴 비율, 귀, 눈, 코, 자세, 실루엣이 가까워지는지 확인한다.</p>
+          <p class="lead">현재 점수는 내려갈 수 있지만, 최고 결과는 유지되며 다음 prompt의 기준이 된다.</p>
         </section>
         
         <section class="slide transition-slide center">
           <div>
             <p class="eyebrow">Live Demo</p>
-            <h2>이제 직접 Loop Engineering을 돌려보겠습니다</h2>
+            <h2>Best result에서 후보 3장을 만들고,<br>가장 좋은 결과만 다음 기준으로 남깁니다</h2>
           </div>
           <div class="flow demo-flow">
-            <div class="node">Original Photo</div><div class="arrow">→</div>
-            <div class="node mint">Generator</div><div class="arrow">→</div>
-            <div class="node">Simple Sketch</div><div class="arrow">→</div>
-            <div class="node violet">Evaluator</div><div class="arrow">→</div>
-            <div class="node">Feedback</div><div class="arrow">→</div>
-            <div class="node mint">Prompt Refiner</div><div class="arrow">↺</div>
+            <div class="node">Best-so-far</div><div class="arrow">→</div>
+            <div class="node mint">3 Candidates</div><div class="arrow">→</div>
+            <div class="node violet">Evaluate</div><div class="arrow">→</div>
+            <div class="node">Selected</div><div class="arrow">→</div>
+            <div class="node mint">Update Best</div><div class="arrow">↺</div>
           </div>
         </section>
         
         <section class="slide timeline-slide spread">
           <header>
-            <p class="eyebrow">Interactive Timeline · run_20260819_234247</p>
-            <h2>Iteration을 움직이며 결과를 비교합니다</h2>
+            <p class="eyebrow">Interactive Timeline · run_20260820_005013</p>
+            <h2>Selected result와 Best-so-far를 함께 봅니다</h2>
           </header>
           <div class="timeline-layout">
             <aside class="original-panel">
@@ -139,13 +124,36 @@
             <section class="iteration-panel">
               <div class="iteration-head">
                 <div><p class="stage-tag">Selected Iteration</p><h3 id="timeline-title">Iteration</h3></div>
-                <div class="score-chip" id="timeline-overall">overall</div>
+                <div class="score-chip" id="timeline-overall">score</div>
               </div>
-              <div class="image-frame"><img id="timeline-image" src="" alt="Selected iteration"></div>
+              <div class="comparison-pair">
+                <article>
+                  <h3>Selected image</h3>
+                  <div class="image-frame"><img id="timeline-image" src="" alt="Selected iteration"></div>
+                </article>
+                <article>
+                  <h3>Best-so-far image</h3>
+                  <div class="image-frame"><img id="timeline-best-image" src="" alt="Best-so-far iteration"></div>
+                </article>
+              </div>
               <div class="timeline-metrics">
                 <div>
     <div class="metric">
-      <span>content</span>
+      <span>iteration</span>
+      <div class="track"><i style="width:0%"></i></div>
+      <b>0.00</b>
+    </div>
+    </div>
+                <div>
+    <div class="metric">
+      <span>best</span>
+      <div class="track"><i style="width:0%"></i></div>
+      <b>0.00</b>
+    </div>
+    </div>
+                <div>
+    <div class="metric">
+      <span>shape</span>
       <div class="track"><i style="width:0%"></i></div>
       <b>0.00</b>
     </div>
@@ -157,381 +165,163 @@
       <b>0.00</b>
     </div>
     </div>
-                <div>
-    <div class="metric">
-      <span>overall</span>
-      <div class="track"><i style="width:0%"></i></div>
-      <b>0.00</b>
-    </div>
-    </div>
               </div>
             </section>
           </div>
           <div class="slider-wrap">
             <span>Iteration 1</span>
-            <input id="iteration-slider" type="range" min="1" max="14" value="1" step="1">
-            <span>Iteration 14</span>
+            <input id="iteration-slider" type="range" min="1" max="2" value="1" step="1">
+            <span>Iteration 2</span>
           </div>
           <div class="timeline-details">
+            <article><h3>Selection</h3><div id="timeline-selection"></div></article>
             <article><h3>Priority Differences</h3><div id="timeline-priority"></div></article>
             <article><h3>Next Prompt</h3><pre id="timeline-prompt"></pre></article>
           </div>
         </section>
         
         <section class="slide spread">
-          <header><p class="eyebrow">Experiment Summary</p><h2>첫 iteration, best iteration, 마지막 iteration</h2></header>
+          <header><p class="eyebrow">Experiment Summary</p><h2>First, Best-so-far, Last</h2></header>
           <div class="summary-grid">
             <article class="result-card"><h3>Original</h3><div class="image-frame"><img src="assets/latest-run/original_pomeranian.png" alt="Original Photo"></div></article>
             
-        <article class="result-card">
-          <h3>First · Iteration 1</h3>
-          <div class="image-frame"><img src="assets/latest-run/iter_001_generated.png" alt="First iteration"></div>
-          
+    <article class="result-card">
+      <h3>First · Iteration 1</h3>
+      <div class="image-frame"><img src="assets/latest-run/iteration_001_selected.png" alt="First"></div>
+      
     <div class="metric">
-      <span>overall</span>
-      <div class="track"><i style="width:58%"></i></div>
-      <b>0.58</b>
+      <span>iteration</span>
+      <div class="track"><i style="width:65%"></i></div>
+      <b>0.65</b>
     </div>
     
-          <p class="priority">Make the ears smaller, rounder, and lower, embedded into the upper sides of the head instead of tall sharp points.</p>
-        </article>
-        
-        <article class="result-card">
-          <h3>Best · Iteration 12</h3>
-          <div class="image-frame"><img src="assets/latest-run/iter_012_generated.png" alt="Best iteration"></div>
-          
+      
     <div class="metric">
-      <span>overall</span>
-      <div class="track"><i style="width:82%"></i></div>
-      <b>0.82</b>
+      <span>best</span>
+      <div class="track"><i style="width:65%"></i></div>
+      <b>0.65</b>
     </div>
     
-          <p class="priority">Make the ears smaller rounded triangles with clearer inner triangular marks.</p>
-        </article>
-        
-        <article class="result-card">
-          <h3>Last · Iteration 14</h3>
-          <div class="image-frame"><img src="assets/latest-run/iter_014_generated.png" alt="Last iteration"></div>
-          
+      <p class="priority">Shorten the body and front legs so the large head clearly dominates the small seated body.</p>
+    </article>
+    
+            
+    <article class="result-card">
+      <h3>Best · Iteration 2</h3>
+      <div class="image-frame"><img src="assets/latest-run/iteration_002_selected.png" alt="Best"></div>
+      
     <div class="metric">
-      <span>overall</span>
-      <div class="track"><i style="width:80%"></i></div>
-      <b>0.80</b>
+      <span>iteration</span>
+      <div class="track"><i style="width:73%"></i></div>
+      <b>0.73</b>
     </div>
     
-          <p class="priority">Make the ears smaller and more embedded again.</p>
-        </article>
-        
+      
+    <div class="metric">
+      <span>best</span>
+      <div class="track"><i style="width:73%"></i></div>
+      <b>0.73</b>
+    </div>
+    
+      <p class="priority">Adjust the face from a perfect circle toward a subtly wider upper head with a slightly narrower lower muzzle area.</p>
+    </article>
+    
+            
+    <article class="result-card">
+      <h3>Last · Iteration 2</h3>
+      <div class="image-frame"><img src="assets/latest-run/iteration_002_selected.png" alt="Last"></div>
+      
+    <div class="metric">
+      <span>iteration</span>
+      <div class="track"><i style="width:73%"></i></div>
+      <b>0.73</b>
+    </div>
+    
+      
+    <div class="metric">
+      <span>best</span>
+      <div class="track"><i style="width:73%"></i></div>
+      <b>0.73</b>
+    </div>
+    
+      <p class="priority">Adjust the face from a perfect circle toward a subtly wider upper head with a slightly narrower lower muzzle area.</p>
+    </article>
+    
           </div>
         </section>
         
         <section class="slide spread">
-          <header><p class="eyebrow">Score Movement</p><h2>점수는 실제 변화만 보여줍니다</h2></header>
+          <header><p class="eyebrow">Score Movement</p><h2>현재 점수와 Best-so-far 점수</h2></header>
           <div class="score-grid">
-            <article class="card score-card"><h3>content_similarity_score</h3>
-    <svg class="line-chart" viewBox="0 0 520 170" role="img" aria-label="content similarity score line chart">
+            <article class="card score-card"><h3>Iteration score</h3>
+    <svg class="line-chart" viewBox="0 0 520 170" role="img" aria-label="iteration score line chart">
       <line x1="28" y1="146" x2="492" y2="146" class="axis"></line>
       <line x1="28" y1="24" x2="28" y2="146" class="axis"></line>
-      <polyline points="28.0,87.4 63.7,76.5 99.4,70.4 135.1,60.6 170.8,56.9 206.5,58.2 242.2,63.0 277.8,65.5 313.5,52.1 349.2,55.7 384.9,56.9 420.6,48.4 456.3,58.2 492.0,53.3" class="series"></polyline>
-      <circle cx="28.0" cy="87.4" r="4"><title>Iter 1: 0.48</title></circle><circle cx="63.7" cy="76.5" r="4"><title>Iter 2: 0.57</title></circle><circle cx="99.4" cy="70.4" r="4"><title>Iter 3: 0.62</title></circle><circle cx="135.1" cy="60.6" r="4"><title>Iter 4: 0.70</title></circle><circle cx="170.8" cy="56.9" r="4"><title>Iter 5: 0.73</title></circle><circle cx="206.5" cy="58.2" r="4"><title>Iter 6: 0.72</title></circle><circle cx="242.2" cy="63.0" r="4"><title>Iter 7: 0.68</title></circle><circle cx="277.8" cy="65.5" r="4"><title>Iter 8: 0.66</title></circle><circle cx="313.5" cy="52.1" r="4"><title>Iter 9: 0.77</title></circle><circle cx="349.2" cy="55.7" r="4"><title>Iter 10: 0.74</title></circle><circle cx="384.9" cy="56.9" r="4"><title>Iter 11: 0.73</title></circle><circle cx="420.6" cy="48.4" r="4"><title>Iter 12: 0.80</title></circle><circle cx="456.3" cy="58.2" r="4"><title>Iter 13: 0.72</title></circle><circle cx="492.0" cy="53.3" r="4"><title>Iter 14: 0.76</title></circle>
+      <polyline points="28.0,66.7 492.0,56.4" class="series"></polyline>
+      <circle cx="28.0" cy="66.7" r="4"><title>Iter 1: 0.65</title></circle><circle cx="492.0" cy="56.4" r="4"><title>Iter 2: 0.73</title></circle>
     </svg>
     <div class="chart">
             <div class="chart-row">
               <span>Iter 1</span>
-              <div class="track"><i style="width:48%"></i></div>
-              <b>0.48</b>
+              <div class="track"><i style="width:65%"></i></div>
+              <b>0.65</b>
             </div>
             
             <div class="chart-row">
               <span>Iter 2</span>
-              <div class="track"><i style="width:57%"></i></div>
-              <b>0.57</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 3</span>
-              <div class="track"><i style="width:62%"></i></div>
-              <b>0.62</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 4</span>
-              <div class="track"><i style="width:70%"></i></div>
-              <b>0.70</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 5</span>
               <div class="track"><i style="width:73%"></i></div>
               <b>0.73</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 6</span>
-              <div class="track"><i style="width:72%"></i></div>
-              <b>0.72</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 7</span>
-              <div class="track"><i style="width:68%"></i></div>
-              <b>0.68</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 8</span>
-              <div class="track"><i style="width:66%"></i></div>
-              <b>0.66</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 9</span>
-              <div class="track"><i style="width:77%"></i></div>
-              <b>0.77</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 10</span>
-              <div class="track"><i style="width:74%"></i></div>
-              <b>0.74</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 11</span>
-              <div class="track"><i style="width:73%"></i></div>
-              <b>0.73</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 12</span>
-              <div class="track"><i style="width:80%"></i></div>
-              <b>0.80</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 13</span>
-              <div class="track"><i style="width:72%"></i></div>
-              <b>0.72</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 14</span>
-              <div class="track"><i style="width:76%"></i></div>
-              <b>0.76</b>
             </div>
             </div></article>
-            <article class="card score-card"><h3>sketch_style_score</h3>
-    <svg class="line-chart" viewBox="0 0 520 170" role="img" aria-label="sketch style score line chart">
+            <article class="card score-card"><h3>Best-so-far score</h3>
+    <svg class="line-chart" viewBox="0 0 520 170" role="img" aria-label="best so far score line chart">
       <line x1="28" y1="146" x2="492" y2="146" class="axis"></line>
       <line x1="28" y1="24" x2="28" y2="146" class="axis"></line>
-      <polyline points="28.0,28.9 63.7,31.3 99.4,35.0 135.1,41.1 170.8,50.8 206.5,37.4 242.2,32.5 277.8,36.2 313.5,38.6 349.2,38.6 384.9,36.2 420.6,35.0 456.3,36.2 492.0,31.3" class="series"></polyline>
-      <circle cx="28.0" cy="28.9" r="4"><title>Iter 1: 0.96</title></circle><circle cx="63.7" cy="31.3" r="4"><title>Iter 2: 0.94</title></circle><circle cx="99.4" cy="35.0" r="4"><title>Iter 3: 0.91</title></circle><circle cx="135.1" cy="41.1" r="4"><title>Iter 4: 0.86</title></circle><circle cx="170.8" cy="50.8" r="4"><title>Iter 5: 0.78</title></circle><circle cx="206.5" cy="37.4" r="4"><title>Iter 6: 0.89</title></circle><circle cx="242.2" cy="32.5" r="4"><title>Iter 7: 0.93</title></circle><circle cx="277.8" cy="36.2" r="4"><title>Iter 8: 0.90</title></circle><circle cx="313.5" cy="38.6" r="4"><title>Iter 9: 0.88</title></circle><circle cx="349.2" cy="38.6" r="4"><title>Iter 10: 0.88</title></circle><circle cx="384.9" cy="36.2" r="4"><title>Iter 11: 0.90</title></circle><circle cx="420.6" cy="35.0" r="4"><title>Iter 12: 0.91</title></circle><circle cx="456.3" cy="36.2" r="4"><title>Iter 13: 0.90</title></circle><circle cx="492.0" cy="31.3" r="4"><title>Iter 14: 0.94</title></circle>
+      <polyline points="28.0,66.7 492.0,56.4" class="series"></polyline>
+      <circle cx="28.0" cy="66.7" r="4"><title>Iter 1: 0.65</title></circle><circle cx="492.0" cy="56.4" r="4"><title>Iter 2: 0.73</title></circle>
     </svg>
     <div class="chart">
             <div class="chart-row">
               <span>Iter 1</span>
-              <div class="track"><i style="width:96%"></i></div>
-              <b>0.96</b>
+              <div class="track"><i style="width:65%"></i></div>
+              <b>0.65</b>
             </div>
             
             <div class="chart-row">
               <span>Iter 2</span>
-              <div class="track"><i style="width:94%"></i></div>
-              <b>0.94</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 3</span>
-              <div class="track"><i style="width:91%"></i></div>
-              <b>0.91</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 4</span>
-              <div class="track"><i style="width:86%"></i></div>
-              <b>0.86</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 5</span>
-              <div class="track"><i style="width:78%"></i></div>
-              <b>0.78</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 6</span>
-              <div class="track"><i style="width:89%"></i></div>
-              <b>0.89</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 7</span>
-              <div class="track"><i style="width:93%"></i></div>
-              <b>0.93</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 8</span>
-              <div class="track"><i style="width:90%"></i></div>
-              <b>0.90</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 9</span>
-              <div class="track"><i style="width:88%"></i></div>
-              <b>0.88</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 10</span>
-              <div class="track"><i style="width:88%"></i></div>
-              <b>0.88</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 11</span>
-              <div class="track"><i style="width:90%"></i></div>
-              <b>0.90</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 12</span>
-              <div class="track"><i style="width:91%"></i></div>
-              <b>0.91</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 13</span>
-              <div class="track"><i style="width:90%"></i></div>
-              <b>0.90</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 14</span>
-              <div class="track"><i style="width:94%"></i></div>
-              <b>0.94</b>
-            </div>
-            </div></article>
-            <article class="card score-card"><h3>overall_score</h3>
-    <svg class="line-chart" viewBox="0 0 520 170" role="img" aria-label="overall score line chart">
-      <line x1="28" y1="146" x2="492" y2="146" class="axis"></line>
-      <line x1="28" y1="24" x2="28" y2="146" class="axis"></line>
-      <polyline points="28.0,75.2 63.7,67.9 99.4,63.3 135.1,56.7 170.8,55.7 206.5,54.0 242.2,56.9 277.8,59.6 313.5,49.4 349.2,52.3 384.9,52.8 420.6,45.7 456.3,53.8 492.0,48.9" class="series"></polyline>
-      <circle cx="28.0" cy="75.2" r="4"><title>Iter 1: 0.58</title></circle><circle cx="63.7" cy="67.9" r="4"><title>Iter 2: 0.64</title></circle><circle cx="99.4" cy="63.3" r="4"><title>Iter 3: 0.68</title></circle><circle cx="135.1" cy="56.7" r="4"><title>Iter 4: 0.73</title></circle><circle cx="170.8" cy="55.7" r="4"><title>Iter 5: 0.74</title></circle><circle cx="206.5" cy="54.0" r="4"><title>Iter 6: 0.75</title></circle><circle cx="242.2" cy="56.9" r="4"><title>Iter 7: 0.73</title></circle><circle cx="277.8" cy="59.6" r="4"><title>Iter 8: 0.71</title></circle><circle cx="313.5" cy="49.4" r="4"><title>Iter 9: 0.79</title></circle><circle cx="349.2" cy="52.3" r="4"><title>Iter 10: 0.77</title></circle><circle cx="384.9" cy="52.8" r="4"><title>Iter 11: 0.76</title></circle><circle cx="420.6" cy="45.7" r="4"><title>Iter 12: 0.82</title></circle><circle cx="456.3" cy="53.8" r="4"><title>Iter 13: 0.76</title></circle><circle cx="492.0" cy="48.9" r="4"><title>Iter 14: 0.80</title></circle>
-    </svg>
-    <div class="chart">
-            <div class="chart-row">
-              <span>Iter 1</span>
-              <div class="track"><i style="width:58%"></i></div>
-              <b>0.58</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 2</span>
-              <div class="track"><i style="width:64%"></i></div>
-              <b>0.64</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 3</span>
-              <div class="track"><i style="width:68%"></i></div>
-              <b>0.68</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 4</span>
               <div class="track"><i style="width:73%"></i></div>
               <b>0.73</b>
             </div>
-            
-            <div class="chart-row">
-              <span>Iter 5</span>
-              <div class="track"><i style="width:74%"></i></div>
-              <b>0.74</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 6</span>
-              <div class="track"><i style="width:75%"></i></div>
-              <b>0.75</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 7</span>
-              <div class="track"><i style="width:73%"></i></div>
-              <b>0.73</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 8</span>
-              <div class="track"><i style="width:71%"></i></div>
-              <b>0.71</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 9</span>
-              <div class="track"><i style="width:79%"></i></div>
-              <b>0.79</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 10</span>
-              <div class="track"><i style="width:77%"></i></div>
-              <b>0.77</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 11</span>
-              <div class="track"><i style="width:76%"></i></div>
-              <b>0.76</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 12</span>
-              <div class="track"><i style="width:82%"></i></div>
-              <b>0.82</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 13</span>
-              <div class="track"><i style="width:76%"></i></div>
-              <b>0.76</b>
-            </div>
-            
-            <div class="chart-row">
-              <span>Iter 14</span>
-              <div class="track"><i style="width:80%"></i></div>
-              <b>0.80</b>
-            </div>
             </div></article>
+            <article class="card score-card"><h3>Update events</h3><div class="insight-list"><p>Iter 1: updated · selected candidate_03</p><p>Iter 2: updated · selected candidate_02</p></div></article>
           </div>
         </section>
         
         <section class="slide spread">
-          <header><p class="eyebrow">Result Analysis</p><h2>Loop의 장점과 한계</h2></header>
+          <header><p class="eyebrow">Result Analysis</p><h2>Best-of-N이 보여주는 것</h2></header>
           <div class="compare">
-            <article class="card"><h3>개선된 요소</h3><div class="insight-list"><p>The body is now compact under the large head, closer to the reference head-to-body ratio.</p><p>The front paws are shorter and more rounded than before.</p><p>The centered seated pose and large fluffy head silhouette are clear.</p><p>The face cluster sits in a balanced lower-middle position on the head.</p></div></article>
-            <article class="card"><h3>아직 어려운 요소</h3><div class="insight-list"><p>The overall shape is becoming too rounded and mascot-like compared with the reference&#x27;s slightly vertical puppy posture.</p><p>The ears are too broad and rounded, less like the reference&#x27;s small rounded triangular ears.</p><p>The eyes are a little too even and cartoon-like.</p><p>The side paws are tucked but still read as simple rounded bumps rather than puppy paws.</p></div></article>
+            <article class="card"><h3>Best에서 맞은 요소</h3><div class="insight-list"><p>Large head and compact body are closer to the reference puppy proportions.</p><p>Small triangular ears are lower and more embedded in the fluffy head outline.</p><p>Overall centered seated composition remains clear.</p><p>Line drawing style stays simple and intentionally non-realistic.</p></div></article>
+            <article class="card"><h3>아직 어려운 요소</h3><div class="insight-list"><p>Face is still too circular and simplified compared with the slightly tapered lower muzzle area in the reference.</p><p>Eyes are too low and evenly spaced; the reference eyes sit a little higher within the face mass.</p><p>Nose is too rounded and large relative to the tiny puppy muzzle.</p><p>Side silhouette is symmetrical, while the reference has a slightly asymmetric seated body and paw placement.</p></div></article>
           </div>
-          <div class="callout">Loop는 항상 한 방향으로 좋아지는 것이 아니다. 한 요소를 수정하면 다른 요소가 흔들릴 수 있고, Evaluator와 Feedback 설계에 따라 수렴 속도가 달라진다.</div>
+          <div class="callout">Iteration score는 흔들릴 수 있지만 Best-so-far는 실제 최고 결과를 유지한다. 그래서 다음 생성 기준이 덜 흔들린다.</div>
         </section>
         
         <section class="slide center conclusion-slide">
           <div>
             <p class="eyebrow">Conclusion</p>
-            <h2>좋은 AI 시스템은<br>좋은 한 번의 답보다<br>좋은 반복 구조를 가진다.</h2>
+            <h2>좋은 Loop는<br>생성만 반복하지 않고<br>선택과 기억을 함께 설계한다.</h2>
           </div>
           <div class="conclusion-strip">
-            <span>Prompt: 좋은 지시</span>
-            <span>Context: 좋은 정보</span>
-            <span>Harness: 좋은 환경</span>
-            <span>Loop: 좋은 반복</span>
+            <span>3 Candidates</span>
+            <span>Independent Evaluation</span>
+            <span>Selected Result</span>
+            <span>Best-so-far</span>
           </div>
         </section>
         
   </main>
   <div class="progress"></div>
-  <script id="run-data" type="application/json">{"runName": "run_20260819_234247", "referenceAsset": "assets/latest-run/original_pomeranian.png", "summary": {"status": "completed", "stop_reason": "requested_iterations_completed", "requested_iterations": 14, "completed_iterations": 14, "best_iteration": 12, "content_similarity_scores": [0.48, 0.57, 0.62, 0.7, 0.73, 0.72, 0.68, 0.66, 0.77, 0.74, 0.73, 0.8, 0.72, 0.76], "sketch_style_scores": [0.96, 0.94, 0.91, 0.86, 0.78, 0.89, 0.93, 0.9, 0.88, 0.88, 0.9, 0.91, 0.9, 0.94], "overall_scores": [0.58, 0.64, 0.678, 0.732, 0.74, 0.754, 0.73, 0.708, 0.792, 0.768, 0.764, 0.822, 0.756, 0.796]}, "iterations": [{"iteration": 1, "imageAsset": "assets/latest-run/iter_001_generated.png", "nextPrompt": "Create a very simple hand-drawn black line doodle of the reference Pomeranian puppy on a plain white background. Keep the centered front-facing seated pose, large simple head, dot eyes, small nose, and primitive circles/loose lines. Refine only two structural points: make the ears smaller, rounder, and lower so they feel embedded in the upper sides of the head; make the seated body more compact with front legs closer together and side paws less spread outward. No realistic fur, no advanced shading, no digital painting, no 3D rendering, no color, no text, no watermark.", "evaluation": {"iteration": 1, "content_similarity_score": 0.48, "sketch_style_score": 0.96, "overall_score": 0.58, "matched_points": ["The image preserves a centered, front-facing seated dog composition.", "The large head over a smaller body broadly matches the puppy-like proportion.", "The drawing uses simple line doodle shapes and avoids realistic fur, advanced shading, digital painting, and 3D rendering.", "The eyes and nose are placed near the face center, broadly matching the reference face layout."], "differences": ["The ears are too tall, sharp, and cat-like compared with the reference, where the ears are smaller, rounder, and partly embedded in the fluffy head.", "The body and paws are too generic and spread outward compared with the compact seated puppy body in the reference.", "The head outline is too smooth and circular; the reference has a softer rounded-square fluffy silhouette.", "The face details are simplified appropriately for iteration 1, but the eyes and nose are not yet close to the exact reference spacing."], "priority_differences": ["Make the ears smaller, rounder, and lower, embedded into the upper sides of the head instead of tall sharp points.", "Make the seated body more compact with front legs closer together and side paws less spread outward."], "suggestions": ["Keep the primitive black line doodle style.", "Only refine ear shape/placement and compact seated body silhouette in the next prompt."]}}, {"iteration": 2, "imageAsset": "assets/latest-run/iter_002_generated.png", "nextPrompt": "Create a very simple hand-drawn black line doodle of the reference Pomeranian puppy on a plain white background. Keep the centered front-facing seated pose, compact seated body, front legs close together, dot eyes, small nose, and primitive line style. Refine only two structural points: change the round bear-like ears into small rounded-triangle Pomeranian ears embedded in the upper sides of the head; narrow the head slightly into a rounded-square fluffy silhouette instead of a very wide cloud shape. No realistic fur, no advanced shading, no digital painting, no 3D rendering, no color, no text, no watermark.", "evaluation": {"iteration": 2, "content_similarity_score": 0.57, "sketch_style_score": 0.94, "overall_score": 0.64, "matched_points": ["The image remains a simple black line sketch with no realistic fur, advanced shading, digital painting, or 3D rendering.", "The ears are lower and rounder than iteration 1, closer to being embedded in the head silhouette.", "The seated body is more compact, with the front legs closer together and less outward spread.", "The centered front-facing composition and large head over smaller body remain consistent with the reference."], "differences": ["The ears became too round and bear-like; the reference ears are still small triangular ears with rounded corners and visible inner ear shape.", "The head is now too wide and cloud-like compared with the reference's more balanced rounded-square fluffy head.", "The eyes are a little too large and high for the reference, and the nose is slightly too centered in a cartoon muzzle.", "The body still lacks the reference's subtle vertical puppy posture and soft taper from head to front legs."], "priority_differences": ["Adjust the ears from round bear-like bumps into small rounded-triangle Pomeranian ears set into the upper sides of the head.", "Narrow the head slightly into a rounded-square fluffy silhouette instead of a very wide cloud shape."], "suggestions": ["Keep the compact seated body and simple line style.", "In the next prompt, refine only ear shape and head silhouette; avoid adding realism or fur detail."]}}, {"iteration": 3, "imageAsset": "assets/latest-run/iter_003_generated.png", "nextPrompt": "Create a simple hand-drawn black line doodle of the reference Pomeranian puppy on a plain white background. Keep the centered front-facing seated pose, primitive line style, small central nose, and fluffy outline. Refine three structural points: shorten the body and make the head clearly larger than the body so the silhouette is less tall and rectangular; move the eyes slightly lower and a little wider apart; soften and lower the small triangular ears so they are embedded in the fluffy head outline. No realistic fur, no advanced shading, no digital painting, no 3D rendering, no color, no text, no watermark.", "evaluation": {"iteration": 3, "content_similarity_score": 0.62, "sketch_style_score": 0.91, "overall_score": 0.678, "matched_points": ["The ears are now closer to small rounded-triangle Pomeranian ears than the previous round bear-like shape.", "The drawing keeps the centered, front-facing seated composition.", "The outline uses a simple jagged fluffy contour while staying in a black line sketch style.", "The face keeps a small central nose and simple round eyes."], "differences": ["The full body silhouette is too tall and rectangular; the reference has a larger head with a shorter, narrower body beneath it.", "The eyes sit slightly too high and too close to the center compared with the reference's lower, wider-set dark eyes.", "The ears are still a little tall and angular compared with the softer small ears embedded in the head fur.", "The bottom paws are large and simplified, making the seated pose look less like the reference."], "priority_differences": ["Shorten the body and make the head proportion larger than the body so the silhouette is less tall and rectangular.", "Move the eyes slightly lower and a little wider apart to match the reference face placement.", "Soften and lower the small triangular ears so they feel embedded in the fluffy head outline."], "suggestions": ["Keep the simple black line doodle style and centered composition.", "Refine body height, eye placement, and ear softness without adding realistic fur or shading."]}}, {"iteration": 4, "imageAsset": "assets/latest-run/iter_004_generated.png", "nextPrompt": "Create a simple hand-drawn black line doodle of the reference Pomeranian puppy on a plain white background. Keep the centered front-facing seated pose, large head over smaller body, small embedded rounded-triangle ears, compact front paws, and small central nose. Refine three structural points: reduce the eyes slightly while keeping them lower and wide-set; simplify the fluffy outline into fewer loose rounded bumps instead of many spiky fur strokes; make the head a softer rounded-square shape and slightly less wide across the top. No realistic fur, no advanced shading, no digital painting, no 3D rendering, no color, no text, no watermark.", "evaluation": {"iteration": 4, "content_similarity_score": 0.7, "sketch_style_score": 0.86, "overall_score": 0.732, "matched_points": ["The large head over a smaller seated body is closer to the reference.", "The ears are embedded in the head outline and no longer appear as oversized sharp triangles.", "The eyes are wider and lower than before, closer to the reference face layout.", "The pose remains centered and front-facing with visible front paws."], "differences": ["The eyes are too large and circular compared with the smaller glossy eyes in the reference.", "The outline uses too many spiky fur strokes, making the sketch more detailed than the intended simple doodle style.", "The head is too wide and square at the top compared with the softer rounded Pomeranian head.", "The body is still taller and broader than the compact body in the reference.", "The nose and mouth sit slightly too low relative to the eyes."], "priority_differences": ["Reduce the eyes slightly and keep them lower and wide-set without making them oversized circles.", "Simplify the fluffy outline into fewer loose bumps instead of many spiky fur strokes.", "Make the head a softer rounded-square shape and slightly less wide across the top."], "suggestions": ["Keep the improved centered pose, embedded ears, and large-head proportion.", "In the next prompt, adjust eyes, simplify the outline, and soften the head shape while staying in simple black line art."]}}, {"iteration": 5, "imageAsset": "assets/latest-run/iter_005_generated.png", "nextPrompt": "Create a simple hand-drawn black line doodle of the reference Pomeranian puppy on a plain white background. Keep the centered front-facing seated pose, large head over a smaller body, and small embedded ears. Refine five points: remove decorative lashes and extra eye outlines so the eyes are simple small dark dots; shorten the body slightly and make it narrower under the large head; simplify the head and body outline into fewer loose hand-drawn bumps; raise the nose and mouth slightly closer to the eye line; keep the ears small and embedded but make their rounded-triangle shape a little clearer. No realistic fur, no advanced shading, no digital painting, no 3D rendering, no color, no text, no watermark.", "evaluation": {"iteration": 5, "content_similarity_score": 0.73, "sketch_style_score": 0.78, "overall_score": 0.74, "matched_points": ["The generated image has a strong front-facing Pomeranian-like composition.", "The large fluffy head and smaller seated body are close to the reference relationship.", "The ears are small and embedded into the upper sides of the head.", "The eyes, nose, and mouth are placed in a more reference-like central face area.", "The front paws and side paws support a seated pose similar to the reference."], "differences": ["The eyes have decorative lashes, highlights, and outlines that make the drawing more polished than the intended simple doodle.", "The face is slightly too cute-cartoon and symmetrical compared with the reference's simpler natural placement.", "The body is still taller and more column-like than the compact puppy body in the reference.", "The head outline still has many small fur marks and could be simpler.", "The nose and mouth are a little too low and stylized."], "priority_differences": ["Remove decorative eye lashes and extra eye outlines; use simple small dark dot eyes.", "Shorten the body slightly and make it narrower under the large head.", "Simplify the head and body outline into fewer loose hand-drawn bumps.", "Raise the nose and mouth slightly closer to the eye line.", "Keep the small embedded ears but make their triangular shape a little clearer."], "suggestions": ["Preserve the improved pose and overall Pomeranian silhouette.", "The next prompt should pull the result back toward a simple line doodle while refining five structural details."]}}, {"iteration": 6, "imageAsset": "assets/latest-run/iter_006_generated.png", "nextPrompt": "Create a simple hand-drawn black line doodle of the reference Pomeranian puppy on a plain white background. Keep the centered front-facing seated pose, plain black lines, simple dot eyes, small nose, and no decorative detail. Refine five points: shorten the body and front legs so the seated puppy body is compact under the large head; lower the small rounded-triangle ears slightly and keep them embedded in the head fur; move the eyes and nose slightly lower as one face cluster; widen the lower head and cheeks into a soft rounded-square face; bring the front paws a little closer together. No realistic fur, no advanced shading, no digital painting, no 3D rendering, no color, no text, no watermark.", "evaluation": {"iteration": 6, "content_similarity_score": 0.72, "sketch_style_score": 0.89, "overall_score": 0.754, "matched_points": ["The sketch style is simpler again, with fewer decorative eye details.", "The head remains large over a smaller seated body, matching the puppy-like reference proportion.", "The ears are small rounded triangles embedded near the upper head.", "The overall centered pose and simple black line drawing style are preserved.", "The front paws and side paws communicate a seated posture."], "differences": ["The body is still too tall and elongated compared with the compact puppy body in the reference.", "The ears sit a little too high and upright compared with the lower embedded ears in the reference.", "The eyes and nose feel slightly high on the face, leaving the lower face too empty.", "The head outline is still taller and narrower than the soft rounded-square face in the reference.", "The front legs are too long and separated compared with the reference's short close front legs."], "priority_differences": ["Shorten the body and front legs so the seated puppy body is compact under the large head.", "Lower the ears slightly and tilt them outward less so they feel embedded in the head fur.", "Move the eyes and nose slightly lower as a grouped face cluster.", "Widen the lower head/cheek area into a soft rounded-square face.", "Bring the front paws a little closer together."], "suggestions": ["Keep the simpler dot eyes and black line doodle style.", "For the next prompt, refine the compact seated posture and lower face/ear placement without adding detail."]}}, {"iteration": 7, "imageAsset": "assets/latest-run/iter_007_generated.png", "nextPrompt": "Create a simple hand-drawn black line doodle of the reference Pomeranian puppy on a plain white background. Keep the centered front-facing seated pose, minimal black lines, compact body, and simple face. Refine five points: make the ears smaller rounded triangles instead of broad rounded corners; soften the boxy head into a slightly rounder Pomeranian face shape; make the eyes a little larger and less far apart while keeping them simple dots; keep the compact body but add a slight vertical puppy posture; add only a few loose side bumps to suggest fluff without increasing detail. No realistic fur, no advanced shading, no digital painting, no 3D rendering, no color, no text, no watermark.", "evaluation": {"iteration": 7, "content_similarity_score": 0.68, "sketch_style_score": 0.93, "overall_score": 0.73, "matched_points": ["The drawing returns to a very simple black line doodle style with minimal detail.", "The centered front-facing seated pose is preserved.", "The face cluster is clean and readable with simple dot eyes and a small nose.", "The body is compact under the large head and the front paws are close together.", "The overall head shape is a soft rounded-square silhouette."], "differences": ["The ears became too rounded and broad, closer to bear-like corners than the reference's small rounded triangular ears.", "The head is slightly too boxy and simplified compared with the reference's softer Pomeranian face.", "The eyes are a bit too small and widely separated compared with the reference.", "The body is still more cartoon-like and less vertically puppy-like than the reference.", "The outline is simple and clean, but it loses some of the reference's fluffy side silhouette."], "priority_differences": ["Make the ears smaller rounded triangles instead of broad rounded corners.", "Soften the boxy head into a slightly rounder Pomeranian face shape.", "Make the eyes a little larger and less far apart while keeping them simple dots.", "Keep the compact body but add a slight vertical puppy posture.", "Add only a few loose side bumps to suggest fluff without increasing detail."], "suggestions": ["Keep the minimal black line doodle style.", "A future prompt should recover the small triangular ear shape and a softer fluffy silhouette without returning to detailed fur strokes."]}}, {"iteration": 8, "imageAsset": "assets/latest-run/iter_008_generated.png", "nextPrompt": "Create a simple hand-drawn black line doodle of the reference Pomeranian puppy on a plain white background. Keep minimal black lines, centered front-facing pose, small rounded-triangle ears embedded in the head, dot eyes, and small nose. Refine five points: shorten the body strongly so the large head clearly dominates the smaller seated body; raise the paw base upward and make the front legs short; move the eye-nose face cluster slightly lower on the head; widen the cheeks and upper body softly; keep the ears small and embedded. No realistic fur, no advanced shading, no digital painting, no 3D rendering, no color, no text, no watermark.", "evaluation": {"iteration": 8, "content_similarity_score": 0.66, "sketch_style_score": 0.9, "overall_score": 0.708, "matched_points": ["The drawing remains a simple black line sketch with no color or advanced rendering.", "The ears recover a clearer small rounded-triangle shape.", "The face remains centered and readable with simple eyes and a small nose.", "The full composition stays front-facing and seated."], "differences": ["The body became too tall and column-like compared with the compact seated puppy body in the reference.", "The head and body merge into one long vertical silhouette instead of a large head over a shorter body.", "The eyes and nose sit slightly high, leaving too much empty lower face and body area.", "The front legs are too long and straight compared with the short close paws in the reference.", "The side silhouette is narrow and lacks the reference's rounded cheek and fluffy shoulder width."], "priority_differences": ["Shorten the body strongly so the large head clearly dominates the smaller seated body.", "Raise the body/paw base upward and make the front legs shorter.", "Move the face cluster slightly lower on the head.", "Widen the cheek and upper body silhouette softly.", "Keep ears small rounded triangles embedded in the head."], "suggestions": ["Keep the minimal line style and avoid adding eye decoration.", "The next prompt should focus on restoring the head-to-body proportion and compact seated posture."]}}, {"iteration": 9, "imageAsset": "assets/latest-run/iter_009_generated.png", "nextPrompt": "Create a simple hand-drawn black line doodle of the reference Pomeranian puppy on a plain white background. Keep the centered front-facing seated pose, large head over compact smaller body, simple dot eyes, small nose, and plain black lines. Refine five points: round the top of the head so it is not flat or square; lower and enlarge the small rounded-triangle ears slightly so they sit on the upper side edges of the head; reduce the eyes a little while keeping them dark simple dots; simplify side fluff into fewer rounded bumps; show a subtle narrow chest between the front paws. No realistic fur, no advanced shading, no digital painting, no 3D rendering, no color, no text, no watermark.", "evaluation": {"iteration": 9, "content_similarity_score": 0.77, "sketch_style_score": 0.88, "overall_score": 0.792, "matched_points": ["The large head and compact body relationship is much closer to the reference.", "The seated pose has short front paws and side paws in a readable Pomeranian-like arrangement.", "The face cluster sits lower than before and feels more centered in the head.", "The sketch remains a simple black line drawing without realistic rendering.", "The cheeks and upper body are softly widened, improving the overall silhouette."], "differences": ["The top of the head is too flat and square compared with the reference's softly rounded fluffy head.", "The ears are too small and high, appearing like tiny marks on top rather than embedded side ears.", "The eyes are slightly too large and cartoon-round compared with the reference.", "The side outline uses many short jagged strokes and could be smoother and simpler.", "The body is compact but a bit too simplified into two rounded front paws."], "priority_differences": ["Round the top of the head more so it is not flat or square.", "Lower and enlarge the small triangular ears slightly so they sit on the upper side edges of the head.", "Reduce the eyes a little while keeping them dark simple dots.", "Simplify the side fluff into fewer rounded bumps.", "Keep the compact seated body but show a subtle narrow chest between the front paws."], "suggestions": ["Preserve the improved head-to-body ratio.", "Next prompt should refine head top, ears, eyes, side outline, and chest while staying simple."]}}, {"iteration": 10, "imageAsset": "assets/latest-run/iter_010_generated.png", "nextPrompt": "Create a simple hand-drawn black line doodle of the reference Pomeranian puppy on a plain white background. Keep the rounded large head, centered front-facing pose, simple dot eyes, small nose, and plain black lines. Refine five points: shorten the body and front legs while preserving the rounded head; move side paws slightly upward and inward for a compact seated pose; add a tiny simple muzzle curve around the nose without shading; make the ears a little smaller and less upright; keep the eyes simple but slightly lower on the face. No realistic fur, no advanced shading, no digital painting, no 3D rendering, no color, no text, no watermark.", "evaluation": {"iteration": 10, "content_similarity_score": 0.74, "sketch_style_score": 0.88, "overall_score": 0.768, "matched_points": ["The head top is rounder and less square than iteration 9.", "The ears sit clearly on the upper side edges and read as rounded triangular ears.", "The eyes are simple dark dots without decorative lashes.", "The centered front-facing composition is preserved.", "The drawing stays in a clean black line sketch style."], "differences": ["The body is too tall and long compared with the compact seated puppy body in the reference.", "The front legs are too long and straight, making the pose look stretched.", "The lower face and cheek area are too simplified and do not show the reference's soft round muzzle volume.", "The ears are slightly larger and more upright than the reference.", "The side paws are low and spread in a cartoon-like way."], "priority_differences": ["Shorten the body and front legs while preserving the rounded head.", "Move the side paws slightly upward and inward for a compact seated pose.", "Add a tiny simple muzzle curve around the nose without adding shading.", "Make the ears a little smaller and less upright.", "Keep the eyes simple but slightly lower on the face."], "suggestions": ["Keep the improved rounded head and simple black line style.", "Next prompt should mainly correct the elongated body and paw placement."]}}, {"iteration": 11, "imageAsset": "assets/latest-run/iter_011_generated.png", "nextPrompt": "Create a simple hand-drawn black line doodle of the reference Pomeranian puppy on a plain white background. Keep the rounded large head, small embedded ears, centered front-facing pose, simple dot eyes, small nose, and plain black lines. Refine five points: compress the body height dramatically so the body is about half the head height; make the front legs short rounded paws instead of long vertical columns; move side paws upward and tuck them close to the body; lower the eye-nose face cluster slightly on the head; curve the body sides inward under the cheeks instead of straight vertical sides. No realistic fur, no advanced shading, no digital painting, no 3D rendering, no color, no text, no watermark.", "evaluation": {"iteration": 11, "content_similarity_score": 0.73, "sketch_style_score": 0.9, "overall_score": 0.764, "matched_points": ["The rounded head and embedded ears remain close to the reference silhouette.", "The face is simple and centered with dot eyes and a small nose.", "The clean black line style stays within the intended simple sketch family.", "The front-facing seated pose is clear.", "The muzzle curve is simple and readable without shading."], "differences": ["The body and front legs remain too long despite the prompt, so the head-to-body ratio is less puppy-like than the reference.", "The side paws still sit low and outward compared with the compact reference pose.", "The eyes sit a little high and are slightly too symmetrical.", "The ears are still a bit upright and rounded at the top.", "The body sides are too straight and vertical."], "priority_differences": ["Compress the body height dramatically so the body is about half the head height.", "Make front legs short rounded paws instead of long vertical columns.", "Move side paws upward and tuck them close to the body.", "Lower the face cluster slightly on the head.", "Curve the body sides inward under the cheeks instead of straight vertical sides."], "suggestions": ["Keep the simple rounded head, small ears, and clean black line style.", "The next prompt should prioritize body compression over facial changes."]}}, {"iteration": 12, "imageAsset": "assets/latest-run/iter_012_generated.png", "nextPrompt": "Create a simple hand-drawn black line doodle of the reference Pomeranian puppy on a plain white background. Keep the large head over a compact short body, centered front-facing seated pose, simple black lines, dot eyes, and small nose. Refine five points: make the ears smaller rounded triangles with clear simple inner triangular marks; restore a slight vertical seated posture without making the body long; add a few uneven side bumps to the cheek and shoulder outline while keeping the style simple; make the eyes slightly less perfectly round and a touch closer together; keep short front paws but separate them clearly with a narrow center gap. No realistic fur, no advanced shading, no digital painting, no 3D rendering, no color, no text, no watermark.", "evaluation": {"iteration": 12, "content_similarity_score": 0.8, "sketch_style_score": 0.91, "overall_score": 0.822, "matched_points": ["The body is now compact under the large head, closer to the reference head-to-body ratio.", "The front paws are shorter and more rounded than before.", "The centered seated pose and large fluffy head silhouette are clear.", "The face cluster sits in a balanced lower-middle position on the head.", "The sketch remains simple black line art without realistic fur or shading."], "differences": ["The overall shape is becoming too rounded and mascot-like compared with the reference's slightly vertical puppy posture.", "The ears are too broad and rounded, less like the reference's small rounded triangular ears.", "The eyes are a little too even and cartoon-like.", "The side paws are tucked but still read as simple rounded bumps rather than puppy paws.", "The side fluff is too smooth in places and could use a few simple uneven bumps."], "priority_differences": ["Make the ears smaller rounded triangles with clearer inner triangular marks.", "Restore a slight vertical seated posture without lengthening the body too much.", "Add a few uneven side bumps to the cheek and shoulder outline while keeping the style simple.", "Make the eyes slightly less perfectly round and a touch closer together.", "Keep short front paws but separate them clearly with a narrow center gap."], "suggestions": ["Preserve the compact body from this iteration.", "Next prompt should reduce mascot-like roundness while keeping the successful simple style."]}}, {"iteration": 13, "imageAsset": "assets/latest-run/iter_013_generated.png", "nextPrompt": "Create a simple hand-drawn black line doodle of the reference Pomeranian puppy on a plain white background. Keep the clear small rounded-triangle ears with simple inner marks, centered front-facing pose, simple black lines, dot eyes, and small nose. Refine five points: return to a very compact body like iteration 12 while keeping the triangular ears; shorten the front legs into rounded paws with a narrow center gap; lower the eyes, nose, and mouth as one face group; make the head slightly wider and rounder in the cheek area; tuck the side paws higher and closer to the body. No realistic fur, no advanced shading, no digital painting, no 3D rendering, no color, no text, no watermark.", "evaluation": {"iteration": 13, "content_similarity_score": 0.72, "sketch_style_score": 0.9, "overall_score": 0.756, "matched_points": ["The ears now read more clearly as small rounded triangles with inner marks.", "The side outline has a few simple uneven bumps while remaining line based.", "The pose remains centered and front-facing.", "The face stays simple with dark dot eyes and a small nose.", "The image avoids realism, shading, and color."], "differences": ["The body became tall and elongated again, losing the compact proportion from iteration 12.", "The front legs are long and straight compared with the short front paws in the reference.", "The face cluster sits too high on the head.", "The head is slightly narrow and vertical rather than softly rounded and fluffy.", "The side paws are too low and spread outward."], "priority_differences": ["Return to a very compact body like iteration 12 while keeping the small triangular ears.", "Shorten the front legs into rounded paws with a narrow center gap.", "Lower the eyes, nose, and mouth as a group.", "Make the head slightly wider and rounder in the cheek area.", "Tuck the side paws higher and closer to the body."], "suggestions": ["Keep the clear ear shape from this iteration.", "The final prompt should recover iteration 12's compact pose without losing the improved triangular ears."]}}, {"iteration": 14, "imageAsset": "assets/latest-run/iter_014_generated.png", "nextPrompt": "Create a simple hand-drawn black line doodle of the reference Pomeranian puppy on a plain white background. Keep the compact body under the large head, centered front-facing seated pose, short close front paws, simple black lines, small nose, and no decorative detail. Refine five points: make the ears smaller and more embedded again; add a few simple uneven cheek and side outline bumps without detailed fur; make the eyes a little larger while keeping simple dots; keep the compact body but make the posture slightly more natural and vertical; soften the lower cheek-to-body transition. No realistic fur, no advanced shading, no digital painting, no 3D rendering, no color, no text, no watermark.", "evaluation": {"iteration": 14, "content_similarity_score": 0.76, "sketch_style_score": 0.94, "overall_score": 0.796, "matched_points": ["The body is compact and sits clearly under the large head.", "The image strongly preserves the simple black line doodle style.", "The centered front-facing seated pose is clear.", "The eyes, nose, and mouth are lowered into a readable face cluster.", "The front paws are short and close together."], "differences": ["The ears became larger and more upright than the reference's small embedded ears.", "The head outline is very smooth and cartoon-like, with less Pomeranian fluff than the reference.", "The cheeks and side body are simplified into rounded shapes rather than the reference's soft fluffy silhouette.", "The eyes are slightly too small and simple relative to the reference.", "The pose is compact but more mascot-like than natural puppy-like."], "priority_differences": ["Make the ears smaller and more embedded again.", "Add a few simple uneven cheek and side outline bumps without adding detailed fur.", "Make the eyes a little larger while keeping simple dots.", "Keep the compact body but make the posture slightly more natural and vertical.", "Soften the lower cheek-to-body transition."], "suggestions": ["Future iteration should combine iteration 12's compact proportion with smaller ears and a slightly fluffier outline.", "Do not add realistic fur or shading; keep the clean sketch style."]}}]}</script>
+  <script id="run-data" type="application/json">{"runName": "run_20260820_005013", "schemaVersion": "best_of_n_v1", "referenceAsset": "assets/latest-run/original_pomeranian.png", "summary": {"status": "completed", "schema_version": "best_of_n_v1", "stop_reason": "requested_iterations_completed", "requested_iterations": 2, "completed_iterations": 2, "iteration_scores": [0.650125, 0.734438], "best_so_far_scores": [0.650125, 0.734438], "best_iteration": 2, "best_candidate": "candidate_02", "final_best_score": 0.734438, "run_directory": "outputs/run_20260820_005013"}, "iterations": [{"iteration": 1, "imageAsset": "assets/latest-run/iteration_001_selected.png", "bestSoFarAsset": "assets/latest-run/iteration_001_selected.png", "nextPrompt": "Using the current Best-so-far sketch as the baseline, create three simple hand-drawn black line doodle candidates of the reference Pomeranian puppy on a plain white background. Keep the centered front-facing seated pose, sparse primitive line style, dot eyes, small nose, rounded fluffy head outline, and small side paws. Refine only two structural points: shorten the body and front legs so the large head clearly dominates the small seated body; lower the small rounded-triangle ears slightly so they feel embedded in the upper sides of the fluffy head. No realistic fur, no advanced shading, no digital painting, no 3D rendering, no color, no text, no watermark.", "evaluation": {"iteration": 1, "candidates": [{"id": "candidate_01", "file": "candidate_01.png", "face_ratio_score": 0.44, "ear_score": 0.34, "eye_position_score": 0.5, "nose_position_score": 0.52, "head_body_ratio_score": 0.56, "pose_score": 0.58, "silhouette_score": 0.36, "composition_score": 0.72, "sketch_style_score": 0.97, "shape_similarity_score": 0.5025, "overall_score": 0.572625, "matched_points": ["Very simple black line doodle style is preserved.", "Centered front-facing seated pose is clear.", "Large head over smaller body broadly matches a puppy-like proportion."], "differences": ["Ears are too large and cat-like.", "Head is too smooth and circular compared with the fluffy reference.", "Body and side paws are generic and spread outward."]}, {"id": "candidate_02", "file": "candidate_02.png", "face_ratio_score": 0.45, "ear_score": 0.48, "eye_position_score": 0.5, "nose_position_score": 0.5, "head_body_ratio_score": 0.62, "pose_score": 0.58, "silhouette_score": 0.42, "composition_score": 0.72, "sketch_style_score": 0.96, "shape_similarity_score": 0.53375, "overall_score": 0.597688, "matched_points": ["Compact body and small embedded ears are closer to the reference than candidate 01.", "Simple black line style is preserved.", "Centered composition is stable."], "differences": ["Head is too square and block-like.", "Ears are too schematic and high inside the head.", "Face is too sparse and lacks the rounded fluffy Pomeranian silhouette."]}, {"id": "candidate_03", "file": "candidate_03.png", "face_ratio_score": 0.54, "ear_score": 0.56, "eye_position_score": 0.58, "nose_position_score": 0.58, "head_body_ratio_score": 0.6, "pose_score": 0.62, "silhouette_score": 0.6, "composition_score": 0.74, "sketch_style_score": 0.92, "shape_similarity_score": 0.6025, "overall_score": 0.650125, "matched_points": ["The few loose side bumps better suggest the Pomeranian fluffy outline.", "Small rounded-triangle ears are closer to the reference.", "Face cluster and centered seated pose are readable.", "The style remains a simple black line sketch."], "differences": ["Body is still too tall and front legs are too long.", "Ears are still a bit high and upright.", "Head is slightly narrow and cartoon-like compared with the reference."]}], "selected_candidate": "candidate_03", "selected_score": 0.650125, "previous_best_score": null, "best_updated": true, "best_so_far_score": 0.650125, "best_iteration": 1, "best_candidate": "candidate_03", "priority_differences": ["Shorten the body and front legs so the large head clearly dominates the small seated body.", "Lower the small rounded-triangle ears slightly so they feel embedded in the upper sides of the fluffy head."], "suggestions": ["Use candidate_03 as the Best-so-far baseline.", "Next prompt should adjust only body height/front legs and ear placement while preserving the simple sketch style."]}, "iterationScore": 0.650125, "bestSoFarScore": 0.650125, "bestUpdated": true, "selectedCandidate": "candidate_03", "candidateAssets": {"candidate_01": "assets/latest-run/iteration_001_candidate_01.png", "candidate_02": "assets/latest-run/iteration_001_candidate_02.png", "candidate_03": "assets/latest-run/iteration_001_candidate_03.png"}}, {"iteration": 2, "imageAsset": "assets/latest-run/iteration_002_selected.png", "bestSoFarAsset": "assets/latest-run/iteration_002_selected.png", "nextPrompt": "Using the current Best-so-far sketch as the baseline, create three simple hand-drawn black line doodle candidates of the reference Pomeranian puppy on a plain white background. Keep the compact seated body, low embedded rounded-triangle ears, fluffy head outline, small paws, centered front-facing pose, and sparse black line style. Refine only two structural points: adjust the face from a perfect circle toward a subtly wider upper head with a slightly narrower lower muzzle area; move the dot eyes slightly higher and a touch closer to match the reference face placement. No realistic fur, no advanced shading, no digital painting, no 3D rendering, no color, no text, no watermark.", "evaluation": {"iteration": 2, "candidates": [{"candidate": "candidate_01", "image": "candidate_01.png", "face_ratio_score": 0.64, "ear_score": 0.58, "eye_position_score": 0.6, "nose_position_score": 0.62, "head_body_ratio_score": 0.67, "pose_score": 0.68, "silhouette_score": 0.66, "composition_score": 0.75, "shape_similarity_score": 0.65, "sketch_style_score": 0.9, "overall_score": 0.6875, "matched_points": ["Maintains a front-facing seated pose.", "Keeps a very simple black line doodle style.", "Preserves round fluffy head outline and small facial marks."], "differences": ["Ears remain somewhat large and high compared with the reference.", "Body and front legs are still too tall relative to the large puppy head.", "Eyes sit too evenly and lack the slight inward/downward placement of the reference."]}, {"candidate": "candidate_02", "image": "candidate_02.png", "face_ratio_score": 0.68, "ear_score": 0.68, "eye_position_score": 0.64, "nose_position_score": 0.66, "head_body_ratio_score": 0.75, "pose_score": 0.74, "silhouette_score": 0.74, "composition_score": 0.78, "shape_similarity_score": 0.70875, "sketch_style_score": 0.88, "overall_score": 0.734438, "matched_points": ["Large head and compact body are closer to the reference puppy proportions.", "Small triangular ears are lower and more embedded in the fluffy head outline.", "Overall centered seated composition remains clear.", "Line drawing style stays simple and intentionally non-realistic."], "differences": ["Face is still too circular and simplified compared with the slightly tapered lower muzzle area in the reference.", "Eyes are too low and evenly spaced; the reference eyes sit a little higher within the face mass.", "Nose is too rounded and large relative to the tiny puppy muzzle.", "Side silhouette is symmetrical, while the reference has a slightly asymmetric seated body and paw placement."]}, {"candidate": "candidate_03", "image": "candidate_03.png", "face_ratio_score": 0.66, "ear_score": 0.63, "eye_position_score": 0.63, "nose_position_score": 0.64, "head_body_ratio_score": 0.6, "pose_score": 0.68, "silhouette_score": 0.69, "composition_score": 0.73, "shape_similarity_score": 0.6575, "sketch_style_score": 0.89, "overall_score": 0.692375, "matched_points": ["Clear large fluffy head and simple black outline.", "Ears are placed inside the upper head boundary.", "Front-facing seated pose is readable."], "differences": ["Body became too tall again, reducing the puppy-like head-to-body ratio.", "The head fills the frame more than the reference composition.", "Facial features are placed too centrally in a large empty face area."]}], "selected_candidate": "candidate_02", "selected_image": "selected.png", "selected_score": 0.734438, "previous_best_score": 0.650125, "best_updated": true, "best_so_far_score": 0.734438, "best_iteration": 2, "best_candidate": "candidate_02", "priority_differences": ["Adjust the face from a perfect circle toward a subtly wider upper head with a slightly narrower lower muzzle area.", "Move the eyes slightly higher and a touch closer to match the reference face placement."], "suggestions": ["Keep the compact body and low embedded ears from candidate_02.", "Refine only the face outline and eye placement in the next prompt.", "Do not add realistic fur texture, shading, color, or painterly detail."]}, "iterationScore": 0.734438, "bestSoFarScore": 0.734438, "bestUpdated": true, "selectedCandidate": "candidate_02", "candidateAssets": {"candidate_01": "assets/latest-run/iteration_002_candidate_01.png", "candidate_02": "assets/latest-run/iteration_002_candidate_02.png", "candidate_03": "assets/latest-run/iteration_002_candidate_03.png"}}]}</script>
   <script src="script.js"></script>
 </body>
 </html>

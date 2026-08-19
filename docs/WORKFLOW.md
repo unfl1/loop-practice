@@ -8,36 +8,30 @@ A short request such as "루프 N번해" means "run N additional iterations".
 
 Default behavior:
 
-- Continue the latest successful completed run when one exists.
-- Start from the existing last iteration number + 1.
-- Use the previous last iteration's `next_prompt.txt` as the next iteration's `prompt.txt`.
+- Continue the latest successful completed Best-of-N run when one exists.
+- If the latest successful run uses the legacy single-image format, preserve it and start a new Best-of-N run.
+- Start from the existing last iteration number + 1 when continuing a Best-of-N run.
+- Use the latest `next_prompt.txt` as the next iteration's `prompt.txt`.
 - Preserve all existing iteration folders.
-- Recompute `summary.json` for the full cumulative run after the requested additional iterations complete.
+- Recompute `summary.json` for the full cumulative Best-of-N run after the requested additional iterations complete.
 
-Create a new run only when the user explicitly asks to start a new run.
-
-Example:
-
-```text
-First request:  루프 2번해  -> iterations 1-2
-Second request: 루프 5번해  -> iterations 3-7 in the same run
-Final run:      iterations 1-7
-```
-
-Intermediate iterations are not separate Git publish points. Do not commit or push while the requested additional iterations are still in progress.
+Create a new run when there is no successful Best-of-N run or when the user explicitly asks to start a new run.
 
 ## Loop
 
-Each iteration follows this sequence:
+Each Best-of-N iteration follows this sequence:
 
 ```text
-original image + current prompt
+original image + current best result + current prompt
 -> Generator
--> generated image
+-> candidate_01.png, candidate_02.png, candidate_03.png
 -> Evaluator
--> evaluation
+-> independent candidate evaluations
+-> select iteration best as selected.png
+-> compare selected score with previous best-so-far
+-> update or keep best-so-far
 -> Prompt Refiner
--> next prompt
+-> next_prompt.txt
 -> next iteration
 ```
 
@@ -45,16 +39,32 @@ The original Pomeranian photo remains the fixed reference for every iteration.
 
 ## Iteration Steps
 
-1. Determine whether to continue the latest successful run or create a new run.
+1. Determine whether to continue the latest successful Best-of-N run or create a new Best-of-N run.
 2. Determine the next cumulative iteration number.
-3. Start with the reference image and the current prompt.
-4. The Generator creates a simple sketch image.
-5. Save the generated image and the exact prompt used.
-6. The Evaluator compares the generated image against the reference.
-7. Save the evaluation result.
-8. The Prompt Refiner creates the next prompt using only the selected priority differences.
-9. Save the next prompt.
-10. Continue until the requested additional iteration count is completed.
+3. Use the current Best-so-far image as the baseline when available.
+4. Generate three real candidate images.
+5. Save all three candidates and the exact prompt used.
+6. Evaluate each candidate independently against the reference image.
+7. Select the candidate with the highest actual `overall_score`.
+8. Save the selected candidate as `selected.png`.
+9. Compare `selected_score` with `previous_best_score`.
+10. Update Best-so-far only if the selected candidate is better.
+11. Save `evaluation.json`.
+12. Create `next_prompt.txt` from the selected candidate's priority differences.
+13. Continue until the requested additional iteration count is completed.
+
+## Best-so-far Rule
+
+Current iteration scores may decrease. Best-so-far scores must not decrease because the system keeps the previous best result when the current selected candidate is not better.
+
+This monotonic best curve must come from selection, not score manipulation.
+
+Example:
+
+```text
+Iteration score: 57 -> 64 -> 61 -> 70 -> 68 -> 75
+Best-so-far:     57 -> 64 -> 64 -> 70 -> 70 -> 75
+```
 
 ## Run Completion
 
@@ -82,7 +92,7 @@ chore: update loop experiment results
 ## Failure Rules
 
 - If the requested additional iteration count is not fully completed, do not update the presentation.
-- If image generation, evaluation, or storage fails, do not automatically push.
+- If any candidate image generation, evaluation, selection, or storage step fails, do not automatically push.
 - Do not automatically commit or push a failed or partial continuation.
 - If sensitive information or unexpected files appear in commit candidates, do not push; report the issue to the user.
 - Do not record failed or skipped steps as successful.

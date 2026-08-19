@@ -19,7 +19,8 @@
 
 html,
 body {
-  height: 100%;
+  min-height: 100%;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -31,36 +32,36 @@ body {
     var(--bg);
   color: var(--ink);
   font-family: Inter, "Segoe UI", Arial, sans-serif;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .deck {
-  align-items: center;
-  display: flex;
-  height: 100vh;
-  justify-content: center;
-  overflow: hidden;
-  padding: 3vh 3vw;
+  display: grid;
+  gap: 8vh;
+  justify-items: center;
+  min-height: 100vh;
+  padding: 3vh 3vw 10vh;
 }
 
 .slide {
-  aspect-ratio: 16 / 9;
   background:
     linear-gradient(145deg, rgba(7, 20, 40, 0.96), rgba(11, 27, 53, 0.96)),
     var(--stage);
   border: 1px solid rgba(142, 197, 255, 0.2);
   border-radius: 24px;
   box-shadow: 0 30px 120px rgba(0, 0, 0, 0.45);
-  display: none;
-  max-height: 94vh;
-  max-width: 94vw;
-  overflow: hidden;
+  display: grid;
+  min-height: 100vh;
+  overflow: visible;
   padding: clamp(34px, 4.2vw, 66px);
   position: relative;
-  width: min(94vw, calc(94vh * 16 / 9));
+  scroll-margin-top: 3vh;
+  width: min(94vw, 1500px);
 }
 
 .slide.active {
-  display: grid;
+  border-color: rgba(107, 220, 255, 0.48);
 }
 
 .slide::before {
@@ -394,7 +395,6 @@ ul {
 
 .timeline-layout {
   grid-template-columns: 0.9fr 1.4fr;
-  min-height: 0;
 }
 
 .original-panel,
@@ -402,7 +402,6 @@ ul {
   background: var(--panel-soft);
   border: 1px solid var(--line);
   border-radius: 8px;
-  min-height: 0;
   padding: 18px;
 }
 
@@ -420,7 +419,7 @@ ul {
 
 .image-frame img {
   border-radius: 8px;
-  max-height: 32vh;
+  max-height: min(46vh, 620px);
   max-width: 100%;
   object-fit: contain;
 }
@@ -444,8 +443,19 @@ ul {
 .timeline-metrics {
   display: grid;
   gap: 10px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   margin-top: 12px;
+}
+
+.comparison-pair {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.comparison-pair article {
+  display: grid;
+  gap: 10px;
 }
 
 .metric,
@@ -503,8 +513,7 @@ input[type="range"] {
 .timeline-details {
   display: grid;
   gap: 18px;
-  grid-template-columns: 0.9fr 1.1fr;
-  min-height: 0;
+  grid-template-columns: 0.8fr 0.9fr 1.3fr;
 }
 
 .timeline-details article,
@@ -512,8 +521,7 @@ input[type="range"] {
   background: var(--panel-soft);
   border: 1px solid var(--line);
   border-radius: 8px;
-  max-height: 23vh;
-  overflow: auto;
+  overflow: visible;
   padding: 16px;
 }
 
@@ -531,8 +539,8 @@ input[type="range"] {
   font-size: clamp(11px, 0.9vw, 14px);
   line-height: 1.42;
   margin: 10px 0 0;
-  max-height: 110px;
-  overflow: auto;
+  min-height: 160px;
+  overflow: visible;
   padding: 12px;
   white-space: pre-wrap;
 }
@@ -544,8 +552,7 @@ input[type="range"] {
 .score-card {
   display: grid;
   gap: 14px;
-  max-height: 54vh;
-  overflow: auto;
+  overflow: visible;
 }
 
 .line-chart {
@@ -557,12 +564,31 @@ input[type="range"] {
   width: 100%;
 }
 
+.line-chart .axis {
+  stroke: rgba(142, 197, 255, 0.28);
+  stroke-width: 1;
+}
+
+.line-chart .series {
+  fill: none;
+  stroke: var(--mint);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 4;
+}
+
+.line-chart circle {
+  fill: var(--cyan);
+  stroke: var(--stage);
+  stroke-width: 2;
+}
+
 .result-card .image-frame {
   min-height: 150px;
 }
 
 .result-card .image-frame img {
-  max-height: 23vh;
+  max-height: min(34vh, 420px);
 }
 
 .priority {
@@ -578,8 +604,7 @@ input[type="range"] {
 }
 
 .insight-list {
-  max-height: 50vh;
-  overflow: auto;
+  overflow: visible;
 }
 
 .insight-list p {
@@ -634,48 +659,15 @@ input[type="range"] {
   right: 42px;
 }
 
-.timeline-details article::-webkit-scrollbar,
-.result-card::-webkit-scrollbar,
-.score-card::-webkit-scrollbar,
-.insight-list::-webkit-scrollbar,
-.prompt-box::-webkit-scrollbar,
-.timeline-details pre::-webkit-scrollbar {
-  height: 8px;
-  width: 8px;
-}
-
-.timeline-details article::-webkit-scrollbar-thumb,
-.result-card::-webkit-scrollbar-thumb,
-.score-card::-webkit-scrollbar-thumb,
-.insight-list::-webkit-scrollbar-thumb,
-.prompt-box::-webkit-scrollbar-thumb,
-.timeline-details pre::-webkit-scrollbar-thumb {
-  background: rgba(107, 220, 255, 0.35);
-  border-radius: 999px;
-}
-
-.timeline-details article::-webkit-scrollbar-track,
-.result-card::-webkit-scrollbar-track,
-.score-card::-webkit-scrollbar-track,
-.insight-list::-webkit-scrollbar-track,
-.prompt-box::-webkit-scrollbar-track,
-.timeline-details pre::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-}
-
 @media (max-width: 900px) {
   .deck {
-    align-items: stretch;
+    gap: 0;
     padding: 0;
   }
 
   .slide {
-    aspect-ratio: auto;
     border-radius: 0;
-    max-height: none;
-    max-width: none;
     min-height: 100vh;
-    overflow-y: auto;
     width: 100vw;
   }
 
@@ -687,6 +679,7 @@ input[type="range"] {
   .compare,
   .demo-goals,
   .timeline-layout,
+  .comparison-pair,
   .timeline-metrics,
   .timeline-details,
   .summary-grid,

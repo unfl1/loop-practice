@@ -1,53 +1,83 @@
 # Evaluator
 
-The Evaluator compares the current generated image with the original Pomeranian reference image.
+The Evaluator compares generated candidates with the original Pomeranian reference image.
 
 ## Inputs
 
 - Original Pomeranian reference image.
-- Current generated image.
-- Current iteration number.
+- Three current candidate images.
+- Previous Best-so-far score and image, when available.
+- Current cumulative iteration number.
 
 ## Evaluation Rules
 
-- Evaluate only the current generated image against the reference image.
-- Do not use previous iteration scores to correct, smooth, or inflate the current score.
-- Scores may rise, stay the same, or fall based on the actual generated image.
+- Evaluate each candidate independently against the reference image.
+- Do not use previous candidate scores to correct, smooth, or inflate the current candidate score.
 - Do not reward realism if it violates the simple sketch style.
 - Do not penalize the image for being simple if the simple line drawing style is preserved.
+- Scores may rise, stay the same, or fall based on the actual candidate.
 
-## Evaluation Items
+## Candidate Scores
 
-Assess the image using these structural categories:
+For each candidate, return:
 
-- Face proportions.
-- Ear size and placement.
-- Eye placement.
-- Nose placement.
-- Head-to-body ratio.
-- Pose.
-- Overall silhouette.
-- Composition similarity.
+- `face_ratio_score`
+- `ear_score`
+- `eye_position_score`
+- `nose_position_score`
+- `head_body_ratio_score`
+- `pose_score`
+- `silhouette_score`
+- `composition_score`
+- `sketch_style_score`
+- `shape_similarity_score`
+- `overall_score`
+- `matched_points`
+- `differences`
 
-## Scores
+Default formulas:
 
-Return:
+```text
+shape_similarity_score = average(
+  face_ratio_score,
+  ear_score,
+  eye_position_score,
+  nose_position_score,
+  head_body_ratio_score,
+  pose_score,
+  silhouette_score,
+  composition_score
+)
 
-- `content_similarity_score`: How closely the structure and composition match the reference.
-- `sketch_style_score`: How well the image preserves the simple hand-drawn line sketch style.
-- `overall_score`: Default formula is `content_similarity_score * 0.8 + sketch_style_score * 0.2`.
+overall_score = shape_similarity_score * 0.85 + sketch_style_score * 0.15
+```
 
-Scores should reflect the actual result. Never increase a score only because the iteration number increased.
+## Best Candidate Selection
+
+- Select the candidate with the highest actual `overall_score`.
+- Save that image as `selected.png`.
+- Record the selected candidate id in `selected_candidate`.
+- Record the selected score in `selected_score`.
+- If candidates tie, choose the candidate with better `shape_similarity_score`. If still tied, choose the lowest candidate number.
+
+## Best-so-far
+
+- Compare the current selected candidate with the previous Best-so-far result.
+- If `selected_score` is greater than `previous_best_score`, set `best_updated` to `true`.
+- If `selected_score` is less than or equal to `previous_best_score`, set `best_updated` to `false` and keep the previous Best-so-far.
+- `best_so_far_score` must never decrease.
+- Do not change candidate scores to make Best-so-far monotonic; monotonicity comes only from keeping the earlier best result.
 
 ## Priority Differences
 
-Select the most important differences in descending order of importance.
+Select priority differences from the selected candidate only. Do not mix in problems from unselected candidates.
+
+Choose the lowest structural score categories first, then translate them into concrete visual differences.
 
 Iterations 1-2:
 
 - Select up to 2 `priority_differences`.
 - Focus on large structural issues.
-- Prioritize face/body ratio, ear size and placement, silhouette, and pose.
 
 Iterations 3-4:
 
@@ -62,14 +92,16 @@ Iterations 5 and later:
 
 ## Output Fields
 
-Return evaluation data with:
+`evaluation.json` must include:
 
-- `content_similarity_score`
-- `sketch_style_score`
-- `overall_score`
-- `matched_points`
-- `differences`
+- `iteration`
+- `candidates`
+- `selected_candidate`
+- `selected_score`
+- `previous_best_score`
+- `best_updated`
+- `best_so_far_score`
 - `priority_differences`
 - `suggestions`
 
-`matched_points` should describe what already resembles the reference. `differences` should list notable mismatches. `priority_differences` should contain only the most important differences for the next refinement step.
+Each candidate entry should include its score fields, `matched_points`, and `differences`.
