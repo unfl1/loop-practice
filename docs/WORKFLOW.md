@@ -2,17 +2,29 @@
 
 This project runs a Loop Engineering workflow for refining a Pomeranian sketch.
 
-## Run Boundary
+## Run Continuation
 
-A user's requested iteration count is treated as one complete run.
+A short request such as "루프 N번해" means "run N additional iterations".
+
+Default behavior:
+
+- Continue the latest successful completed run when one exists.
+- Start from the existing last iteration number + 1.
+- Use the previous last iteration's `next_prompt.txt` as the next iteration's `prompt.txt`.
+- Preserve all existing iteration folders.
+- Recompute `summary.json` for the full cumulative run after the requested additional iterations complete.
+
+Create a new run only when the user explicitly asks to start a new run.
 
 Example:
 
 ```text
-루프 10번해 = one run containing 10 iterations
+First request:  루프 2번해  -> iterations 1-2
+Second request: 루프 5번해  -> iterations 3-7 in the same run
+Final run:      iterations 1-7
 ```
 
-Intermediate iterations are not separate Git publish points. Do not commit or push while the requested run is still in progress.
+Intermediate iterations are not separate Git publish points. Do not commit or push while the requested additional iterations are still in progress.
 
 ## Loop
 
@@ -33,23 +45,25 @@ The original Pomeranian photo remains the fixed reference for every iteration.
 
 ## Iteration Steps
 
-1. Start with the reference image and the current prompt.
-2. The Generator creates a simple sketch image.
-3. Save the generated image and the exact prompt used.
-4. The Evaluator compares the generated image against the reference.
-5. Save the evaluation result.
-6. The Prompt Refiner creates the next prompt using only the selected priority differences.
-7. Save the next prompt.
-8. Continue to the next iteration unless a stop condition or failure occurs.
+1. Determine whether to continue the latest successful run or create a new run.
+2. Determine the next cumulative iteration number.
+3. Start with the reference image and the current prompt.
+4. The Generator creates a simple sketch image.
+5. Save the generated image and the exact prompt used.
+6. The Evaluator compares the generated image against the reference.
+7. Save the evaluation result.
+8. The Prompt Refiner creates the next prompt using only the selected priority differences.
+9. Save the next prompt.
+10. Continue until the requested additional iteration count is completed.
 
 ## Run Completion
 
-A run is successful only when every requested iteration completes and all required files are saved.
+A continuation is successful only when every requested additional iteration completes and all required files are saved.
 
-After a successful run:
+After a successful continuation:
 
-1. Save all iteration folders under `outputs/run_...`.
-2. Generate `summary.json` inside that run folder.
+1. Ensure all cumulative iteration folders remain under the same `outputs/run_...` folder.
+2. Generate or update `summary.json` for the full cumulative run.
 3. Rebuild the presentation once from the latest successful run.
 4. Copy only presentation-required actual assets into `presentation/assets/latest-run/`.
 5. Keep `outputs/` out of Git because it is local experiment history.
@@ -67,15 +81,16 @@ chore: update loop experiment results
 
 ## Failure Rules
 
-- If the requested iteration count is not fully completed, do not update the presentation.
+- If the requested additional iteration count is not fully completed, do not update the presentation.
 - If image generation, evaluation, or storage fails, do not automatically push.
-- Do not automatically commit or push a failed run.
+- Do not automatically commit or push a failed or partial continuation.
 - If sensitive information or unexpected files appear in commit candidates, do not push; report the issue to the user.
 - Do not record failed or skipped steps as successful.
+- Do not overwrite or delete previous successful iteration results to hide a failure.
 
 ## Refinement Strength
 
-The refinement scope grows over time.
+The refinement scope grows according to the actual cumulative iteration number.
 
 Iterations 1-2:
 
@@ -99,8 +114,8 @@ Iterations 5 and later:
 
 The loop stops when one of these conditions is met:
 
-- The requested iteration count is reached.
+- The requested additional iteration count is reached.
 - An execution error prevents the next step from being completed.
 - A target score is reached, if a target score is explicitly configured.
 
-If a stop condition happens before all requested iterations complete, treat the run as incomplete unless the user explicitly configured that stop condition as successful.
+If a stop condition happens before all requested additional iterations complete, treat the continuation as incomplete unless the user explicitly configured that stop condition as successful.

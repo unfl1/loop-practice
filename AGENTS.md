@@ -16,15 +16,26 @@ The next iteration starts from the `next_prompt.txt` created by the Prompt Refin
 
 ## Short Run Commands
 
-When the user gives a short execution request such as "루프 5번해", "루프 3번 실행해", or "5 iteration 돌려", interpret the number as the requested iteration count.
+When the user gives a short execution request such as "루프 5번해", "루프 3번 실행해", or "5 iteration 돌려", interpret the number as the number of additional iterations to run.
+
+Default behavior:
+
+- If a successful completed run already exists, continue that latest successful run.
+- Add the requested N iterations after the existing last iteration.
+- Example: first "루프 2번해" creates iterations 1-2.
+- Example: later "루프 5번해" continues the same run and creates iterations 3-7.
+- The final run must retain all existing iteration folders and add the new ones.
+- Do not delete, overwrite, or renumber existing iteration results.
+- The next iteration number is always the previous last iteration number + 1.
+- Use the previous last iteration's `next_prompt.txt` as the next iteration's `prompt.txt`.
+- Apply refinement strength using the actual cumulative iteration number.
+
+Create a new run only when the user explicitly asks to start a new run, such as "새 run으로 시작해".
 
 For these short commands:
 
-- Treat the full requested iteration count as one run.
-- Example: "루프 10번해" means 10 iterations inside one run.
 - Use `inputs/pomeranian.png` as the default reference image.
-- Create a new run under `outputs/run_...`.
-- Execute the existing loop order for the requested number of iterations:
+- Execute the existing loop order for the requested additional iterations:
 
 ```text
 Generator -> Evaluator -> Prompt Refiner
@@ -33,20 +44,19 @@ Generator -> Evaluator -> Prompt Refiner
 - Follow the role instructions in `agents/generator.md`, `agents/evaluator.md`, and `agents/prompt_refiner.md`.
 - Follow the workflow in `docs/WORKFLOW.md`.
 - Save outputs using the format defined in `docs/OUTPUT_FORMAT.md`.
-- Do not reuse or overwrite a previous run unless the user explicitly asks for that.
 - Record only steps that were actually completed.
 - Do not invent scores, images, prompts, or successful results.
 
 ## Post-loop Workflow
 
-The user's requested iteration count is the run boundary. Do not commit or push during intermediate iterations.
+The user's requested additional iteration count is the execution boundary. Do not commit or push during intermediate iterations.
 
-Example: if the user asks "루프 10번해", all 10 iterations belong to one run. The post-loop workflow may run only after all 10 requested iterations complete successfully.
+Example: if the latest completed run has iterations 1-2 and the user asks "루프 5번해", iterations 3-7 are the requested additional work. The post-loop workflow may run only after iterations 3-7 complete successfully.
 
-After a successful run completes:
+After the requested additional iterations complete successfully:
 
-1. Save the full iteration results under `outputs/run_...`.
-2. Generate `summary.json` for that run.
+1. Keep the full cumulative iteration results under the same `outputs/run_...` folder, unless the user explicitly requested a new run.
+2. Regenerate `summary.json` for the full cumulative run.
 3. Rebuild the presentation exactly once from the latest successful run.
 4. Copy or update only the actual result assets needed by the presentation under `presentation/assets/latest-run/`.
 5. Keep the entire `outputs/` directory as local experiment history; do not include it in Git.
@@ -64,8 +74,8 @@ chore: update loop experiment results
 
 Failure rules:
 
-- If all requested iterations do not complete, do not update the presentation.
-- Do not automatically commit or push a failed run.
+- If all requested additional iterations do not complete, do not update the presentation.
+- Do not automatically commit or push a failed or partial continuation.
 - If image generation, evaluation, or storage fails, do not automatically push.
 - If sensitive information or unexpected files are commit candidates, do not push; report the issue to the user first.
 
@@ -105,7 +115,7 @@ overall_score = content_similarity_score * 0.8 + sketch_style_score * 0.2
 
 ## Refinement Strength
 
-The number of priority differences depends on the current iteration number.
+The number of priority differences depends on the actual cumulative iteration number.
 
 Iterations 1-2:
 
