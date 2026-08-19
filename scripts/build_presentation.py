@@ -528,6 +528,10 @@ def fixed_slides_v2() -> list[str]:
         <section class="slide spread evolution-slide">
           <header><p class="eyebrow">Expansion Map</p><h2>Prompt → Context → Harness → Loop</h2></header>
           <p class="lead">공식적인 역사나 우열이 아니라, AI에게 맡기는 범위를 넓힐 때 추가되는 설계 관점입니다.</p>
+          <div class="narrative cols-2">
+            <article><h3>왜 관점이 넓어지는가</h3><p>좋은 지시는 방향을 정하지만 판단에 필요한 정보까지 채우지는 못합니다. 정보를 충분히 줘도 실제 파일과 도구에 접근하지 못하면 행동할 수 없고, 행동이 가능해도 결과를 평가해 다시 시도하는 구조는 별도로 설계해야 합니다.</p></article>
+            <article><h3>네 관점이 맡는 역할</h3><p>Prompt는 행동 방향을, Context는 판단 재료를, Harness는 실행과 관찰이 가능한 공간을 제공합니다. Loop는 실행 결과 이후 무엇을 평가하고 기억하며 다음 입력을 어떻게 바꿀지 결정합니다.</p></article>
+          </div>
           <div class="evolution">
             <article class="phase"><b>01 · Prompt</b><h3>어떻게 지시할까?</h3><p>역할, 목표, 제약과 출력 형식을 설계해 해야 할 일을 분명하게 만듭니다.</p><em>없는 정보까지 제공하지는 못합니다.</em></article>
             <article class="phase"><b>02 · Context</b><h3>무엇을 보여줄까?</h3><p>문서, 대화, 코드와 현재 상태처럼 판단에 필요한 정보를 제공합니다.</p><em>정보만으로 실제 행동할 수는 없습니다.</em></article>
@@ -624,7 +628,7 @@ def dynamic_slides(data: RunData) -> list[str]:
 
     return [
         f"""
-        <section class="slide timeline-slide spread">
+        <section class="slide timeline-slide spread result-slide">
           <header>
             <p class="eyebrow">Interactive Timeline · {escape(data.run_dir.name)}</p>
             <h2>Selected result와 Best-so-far를 함께 봅니다</h2>
@@ -671,8 +675,9 @@ def dynamic_slides(data: RunData) -> list[str]:
         </section>
         """,
         f"""
-        <section class="slide spread">
-          <header><p class="eyebrow">Experiment Summary</p><h2>First, Best-so-far, Last</h2></header>
+        <section class="slide spread result-slide">
+          <header><p class="eyebrow">Results Overview</p><h2>Original, First, Best-so-far, Last</h2></header>
+          <p class="lead">첫 결과와 마지막 결과만 비교하지 않고, 지금까지 관찰된 최고 결과를 함께 봅니다. 마지막 iteration이 항상 최고라는 보장은 없기 때문에 Best-so-far를 별도로 보존합니다.</p>
           <div class="summary-grid">
             <article class="result-card"><h3>Original</h3>{image_box(data.reference_asset, "Original Photo", "원본 이미지 없음")}</article>
             {result_card(first, "First")}
@@ -682,7 +687,7 @@ def dynamic_slides(data: RunData) -> list[str]:
         </section>
         """,
         f"""
-        <section class="slide spread">
+        <section class="slide spread result-slide">
           <header><p class="eyebrow">Score Movement</p><h2>현재 점수와 Best-so-far 점수</h2></header>
           <div class="score-grid">
             <article class="card score-card"><h3>Iteration score</h3>{line_chart_from_values(iteration_values, "iteration")}{score_rows(iterations, lambda item: item.iteration_score)}</article>
@@ -692,7 +697,7 @@ def dynamic_slides(data: RunData) -> list[str]:
         </section>
         """,
         f"""
-        <section class="slide spread">
+        <section class="slide spread result-slide">
           <header><p class="eyebrow">Result Analysis</p><h2>Best-of-N이 보여주는 것</h2></header>
           <div class="compare">
             <article class="card"><h3>Best에서 맞은 요소</h3>{pill_items(selected_eval(best).get("matched_points", best.evaluation.get("matched_points", [])))}</article>
