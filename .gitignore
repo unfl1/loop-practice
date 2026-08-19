@@ -1,0 +1,40 @@
+.env
+.venv/
+
+# Python cache
+__pycache__/
+**/__pycache__/
+**/*pycache*/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Editors
+.vscode/
+.idea/
+
+# OS temporary files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+~$*
+*.swp
+*.swo
+
+# Runtime data
+logs/
+**/logs/
+*.log
+cache/
+**/cache/
+temp/
+**/temp/
+tmp/
+**/tmp/
+*.tmp
+*.temp
+outputs/

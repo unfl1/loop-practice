@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Loop Engineering</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="deck">
+    
+        <section class="slide center">
+          <div>
+            <div class="eyebrow">AI System Design</div>
+            <h1>Loop Engineering</h1>
+            <p class="title-sub">한 번 잘 시키는 것에서,<br>반복 구조를 설계하는 것으로</p>
+          </div>
+          <div class="footer">Codex demo presentation</div>
+        </section>
+        
+        <section class="slide spread">
+          <div>
+            <div class="eyebrow">Evolution</div>
+            <h2>AI 시스템 설계의 발전 흐름</h2>
+          </div>
+          <div class="evolution">
+            <div class="card"><div class="stage-tag">Prompt</div><h3>잘 시키기</h3><p>한 번의 지시를 더 정확하게 만든다.</p></div>
+            <div class="card"><div class="stage-tag">Context</div><h3>잘 보여주기</h3><p>AI가 판단할 수 있는 정보를 함께 제공한다.</p></div>
+            <div class="card"><div class="stage-tag">Harness</div><h3>일할 환경 만들기</h3><p>도구와 파일, 검증 환경을 설계한다.</p></div>
+            <div class="card"><div class="stage-tag">Loop</div><h3>다시 시도하게 하기</h3><p>결과를 보고 다음 행동을 바꾼다.</p></div>
+          </div>
+        </section>
+        
+        <section class="slide spread">
+          <div>
+            <div class="eyebrow">Prompt Engineering</div>
+            <h2>AI에게 어떻게 잘 시킬 것인가?</h2>
+          </div>
+          <div class="flow">
+            <div class="node">사람</div><div class="arrow">→</div>
+            <div class="node mint">Prompt</div><div class="arrow">→</div>
+            <div class="node violet">AI</div><div class="arrow">→</div>
+            <div class="node">결과</div>
+          </div>
+          <p class="lead">한계: 결과가 마음에 들지 않으면 사람이 다시 프롬프트를 고친다.</p>
+        </section>
+        
+        <section class="slide spread">
+          <div>
+            <div class="eyebrow">Context Engineering</div>
+            <h2>AI에게 어떤 정보를 보여줄 것인가?</h2>
+          </div>
+          <div class="grid cols-3">
+            <div class="card"><h3>사용자 요구</h3><p>이번 작업의 목표와 제약</p></div>
+            <div class="card"><h3>이전 대화</h3><p>이미 합의된 방향과 상태</p></div>
+            <div class="card"><h3>참고자료</h3><p>이미지, 문서, 예시 결과</p></div>
+            <div class="card"><h3>메모리</h3><p>반복 중 유지해야 할 정보</p></div>
+            <div class="card"><h3>도구</h3><p>AI가 사용할 수 있는 능력</p></div>
+            <div class="card"><h3>규칙</h3><p>역할, 금지 조건, 출력 형식</p></div>
+          </div>
+          <p class="lead">Prompt 자체에서 Context 설계로 확장된다.</p>
+        </section>
+        
+        <section class="slide spread">
+          <div>
+            <div class="eyebrow">Harness Engineering</div>
+            <h2>AI가 어떤 환경에서 일하게 할 것인가?</h2>
+          </div>
+          <div class="grid cols-3">
+            <div class="card"><h3>File System</h3><p>입력과 산출물을 남긴다.</p></div>
+            <div class="card"><h3>Git</h3><p>변경을 추적한다.</p></div>
+            <div class="card"><h3>Test</h3><p>동작을 검증한다.</p></div>
+            <div class="card"><h3>Browser</h3><p>결과를 직접 확인한다.</p></div>
+            <div class="card"><h3>Logs</h3><p>실행 과정을 기록한다.</p></div>
+            <div class="card"><h3>Tools</h3><p>생성, 비교, 저장을 수행한다.</p></div>
+          </div>
+        </section>
+        
+        <section class="slide spread">
+          <div>
+            <div class="eyebrow">Loop Engineering</div>
+            <h2>AI가 결과를 보고 다시 일하게 하려면?</h2>
+          </div>
+          <div class="loop-cycle">
+            <div class="node">생성</div>
+            <div class="node mint">평가</div>
+            <div class="node violet">피드백</div>
+            <div class="node">수정</div>
+            <div class="node mint">재생성</div>
+          </div>
+          <p class="lead">사람이 하던 반복 개선 과정을 시스템 안에 넣는다.</p>
+        </section>
+        
+        <section class="slide spread">
+          <div>
+            <div class="eyebrow">Compare</div>
+            <h2>Harness Engineering vs Loop Engineering</h2>
+          </div>
+          <div class="compare">
+            <div class="card"><div class="stage-tag">Harness = 작업 환경</div><h3>AI가 안정적으로 행동할 수 있는 조건</h3><p>도구, 파일, 테스트, 브라우저, 로그를 갖춘 실행 무대다.</p></div>
+            <div class="card"><div class="stage-tag">Loop = 반복 과정</div><h3>AI가 결과를 보고 다음 행동을 바꾸는 구조</h3><p>평가, 피드백, 수정, 재생성을 반복하는 개선 흐름이다.</p></div>
+          </div>
+          <div class="relation"><div class="node">Harness</div><div class="arrow">위에서</div><div class="node mint">Loop가 동작한다</div></div>
+        </section>
+        
+        <section class="slide spread">
+          <div>
+            <div class="eyebrow">Demo</div>
+            <h2>이번 데모 소개</h2>
+          </div>
+          <div class="grid cols-2">
+            <div class="card"><h3>입력</h3><p>실제 포메라니안 사진</p></div>
+            <div class="card"><h3>첫 결과</h3><p>일부러 매우 단순한 스케치</p></div>
+            <div class="card"><h3>Evaluator</h3><p>원본과 생성 이미지의 차이를 평가</p></div>
+            <div class="card"><h3>Prompt Refiner</h3><p>다음 생성 지시를 작게 수정</p></div>
+          </div>
+          <p class="lead">반복할수록 원본 형태에 가까워지는지 확인한다.</p>
+        </section>
+        
+        <section class="slide spread">
+          <div>
+            <div class="eyebrow">Live Transition</div>
+            <h2>이제 직접 돌려보겠습니다</h2>
+          </div>
+          <div class="flow">
+            <div class="node">Original Photo</div><div class="arrow">→</div>
+            <div class="node mint">Generator</div><div class="arrow">→</div>
+            <div class="node">Simple Sketch</div><div class="arrow">→</div>
+            <div class="node violet">Evaluator</div><div class="arrow">→</div>
+            <div class="node">Feedback</div><div class="arrow">→</div>
+            <div class="node mint">Prompt Refiner</div><div class="arrow">→</div>
+            <div class="node">Generator</div>
+          </div>
+        </section>
+        
+            <section class="slide spread">
+              <div>
+                <div class="eyebrow">Results</div>
+                <h2>실험 결과</h2>
+              </div>
+              <div class="no-data">아직 실행 결과 없음</div>
+              <div class="notice">outputs/run_* 실행 결과가 아직 없습니다.</div>
+            </section>
+            
+  </main>
+  <div class="progress"></div>
+  <script src="script.js"></script>
+</body>
+</html>
