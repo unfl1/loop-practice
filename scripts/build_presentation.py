@@ -518,14 +518,14 @@ def fixed_slides_v2() -> list[str]:
     """Return the durable theory chapters; only result chapters are run-driven."""
     return [
         """
-        <section class="slide title-slide center">
+        <section class="slide title-slide center" data-chapter="intro">
           <div class="title-mark">Loop</div>
           <div><p class="eyebrow">AI System Design</p><h1>Loop Engineering</h1>
           <p class="title-sub">한 번 잘 시키는 것에서,<br>결과가 다음 실행을 바꾸는 구조로</p></div>
         </section>
         """,
         """
-        <section class="slide spread evolution-slide">
+        <section id="chapter-expansion" class="slide spread evolution-slide" data-chapter="expansion">
           <header><p class="eyebrow">Expansion Map</p><h2>Prompt → Context → Harness → Loop</h2></header>
           <p class="lead">공식적인 역사나 우열이 아니라, AI에게 맡기는 범위를 넓힐 때 추가되는 설계 관점입니다.</p>
           <div class="narrative cols-2">
@@ -542,7 +542,7 @@ def fixed_slides_v2() -> list[str]:
         </section>
         """,
         """
-        <section class="slide spread concept-slide">
+        <section id="chapter-prompt" class="slide spread concept-slide" data-chapter="prompt">
           <header><p class="eyebrow">Prompt Engineering</p><h2>AI에게 어떻게 잘 시킬 것인가?</h2></header>
           <div class="question">핵심 질문 · “AI에게 무엇을, 어떤 조건으로 수행하라고 말할 것인가?”</div>
           <div class="narrative cols-2">
@@ -554,7 +554,7 @@ def fixed_slides_v2() -> list[str]:
         </section>
         """,
         """
-        <section class="slide spread concept-slide">
+        <section id="chapter-context" class="slide spread concept-slide" data-chapter="context">
           <header><p class="eyebrow">Context Engineering</p><h2>AI가 판단할 때 무엇을 보여줄 것인가?</h2></header>
           <div class="question">핵심 질문 · “이 판단을 정확히 하려면 지금 어떤 정보를 함께 제공해야 하는가?”</div>
           <div class="narrative cols-2">
@@ -566,7 +566,7 @@ def fixed_slides_v2() -> list[str]:
         </section>
         """,
         """
-        <section class="slide spread concept-slide harness-slide">
+        <section id="chapter-harness" class="slide spread concept-slide harness-slide" data-chapter="harness">
           <header><p class="eyebrow">Harness Engineering</p><h2>AI가 어떤 환경에서 실제로 일하게 할 것인가?</h2></header>
           <div class="question">핵심 질문 · “AI에게 어떤 도구, 관찰 수단과 권한을 가진 작업 환경을 줄 것인가?”</div>
           <div class="narrative cols-2">
@@ -579,7 +579,7 @@ def fixed_slides_v2() -> list[str]:
         </section>
         """,
         """
-        <section class="slide spread concept-slide loop-slide">
+        <section id="chapter-loop" class="slide spread concept-slide loop-slide" data-chapter="loop">
           <header><p class="eyebrow">Loop Engineering</p><h2>평가 결과가 다음 실행을 바꾸게 하려면?</h2></header>
           <p class="lead">Loop Engineering은 같은 작업을 여러 번 실행하는 것이 아니라, 이전 실행을 평가하고 그 결과가 다음 실행의 입력을 바꾸도록 반복 구조 자체를 설계하는 것입니다.</p>
           <div class="loop-diagram"><div class="node">Goal</div><div class="arrow">→</div><div class="node mint">Generator</div><div class="arrow">→</div><div class="node">Result</div><div class="arrow">→</div><div class="node violet">Evaluator</div><div class="arrow">→</div><div class="node">Feedback</div><div class="arrow">→</div><div class="node mint">Refiner</div><div class="arrow">↺</div></div>
@@ -588,14 +588,14 @@ def fixed_slides_v2() -> list[str]:
         </section>
         """,
         """
-        <section class="slide spread relationship-slide">
+        <section id="chapter-harness-loop" class="slide spread relationship-slide" data-chapter="harness-loop">
           <header><p class="eyebrow">Harness vs Loop</p><h2>작업 환경과 반복 구조는 다른 질문에 답합니다</h2></header>
           <div class="compare narrative"><article><h3>Harness Engineering</h3><p>AI가 사용할 도구, 파일 접근, 테스트, 로그, 실행 환경과 권한을 설계합니다. 핵심 질문은 “AI에게 어떤 작업 환경을 줄 것인가?”입니다.</p><ul><li>무엇을 실행하고 관찰할 수 있는가?</li><li>어떤 권한과 안전 경계를 가지는가?</li></ul></article><article><h3>Loop Engineering</h3><p>결과 이후 평가, Feedback, 상태 유지, 종료 조건과 최고 결과 보존을 설계합니다. 핵심 질문은 “결과 이후 무엇을 다시 하게 할 것인가?”입니다.</p><ul><li>무엇을 다음 실행에 전달하는가?</li><li>언제 멈추고 무엇을 기억하는가?</li></ul></article></div>
           <div class="harness-boundary"><span>Harness Environment</span><div class="flow"><div class="node mint">Generator</div><div class="arrow">→</div><div class="node violet">Evaluator</div><div class="arrow">→</div><div class="node">Refiner</div><div class="arrow">↺</div></div><p>Harness가 작업 기반을 제공하고, 그 환경 안에서 Loop가 결과를 관찰하며 다음 행동을 결정합니다.</p></div>
         </section>
         """,
         """
-        <section class="slide spread demo-intro-slide">
+        <section id="chapter-demo" class="slide spread demo-intro-slide" data-chapter="demo">
           <header><p class="eyebrow">Demo Transition</p><h2>Loop를 반복하면 실제로 목표에 더 가까워질까?</h2></header>
           <div class="narrative cols-2"><article><h3>왜 이 실험인가</h3><p>실제 포메라니안 사진을 고정 원본으로 두고 첫 결과는 일부러 단순한 손그림으로 제한합니다. 형태 차이가 분명해 평가와 피드백이 다음 결과를 어떻게 바꾸는지 관찰하기 좋습니다.</p></article><article><h3>무엇을 검증하는가</h3><p>이미지 모델의 절대 성능을 자랑하려는 것이 아닙니다. Evaluator가 찾은 구조적 차이를 Prompt Refiner가 다음 입력에 반영할 때 실제 결과가 어떻게 달라지는지 확인합니다.</p></article></div>
           <div class="flow demo-flow"><div class="node">Original Photo</div><div class="arrow">→</div><div class="node mint">Generator</div><div class="arrow">→</div><div class="node">Simple Sketch</div><div class="arrow">→</div><div class="node violet">Evaluator</div><div class="arrow">→</div><div class="node">Feedback</div><div class="arrow">→</div><div class="node mint">Prompt Refiner</div><div class="arrow">↺</div></div>
@@ -628,7 +628,7 @@ def dynamic_slides(data: RunData) -> list[str]:
 
     return [
         f"""
-        <section class="slide timeline-slide spread result-slide">
+        <section id="chapter-results" class="slide timeline-slide spread result-slide" data-chapter="results">
           <header>
             <p class="eyebrow">Interactive Timeline · {escape(data.run_dir.name)}</p>
             <h2>Selected result와 Best-so-far를 함께 봅니다</h2>
@@ -675,7 +675,7 @@ def dynamic_slides(data: RunData) -> list[str]:
         </section>
         """,
         f"""
-        <section class="slide spread result-slide">
+        <section class="slide spread result-slide" data-chapter="results">
           <header><p class="eyebrow">Results Overview</p><h2>Original, First, Best-so-far, Last</h2></header>
           <p class="lead">첫 결과와 마지막 결과만 비교하지 않고, 지금까지 관찰된 최고 결과를 함께 봅니다. 마지막 iteration이 항상 최고라는 보장은 없기 때문에 Best-so-far를 별도로 보존합니다.</p>
           <div class="summary-grid">
@@ -687,7 +687,7 @@ def dynamic_slides(data: RunData) -> list[str]:
         </section>
         """,
         f"""
-        <section class="slide spread result-slide">
+        <section class="slide spread result-slide" data-chapter="results">
           <header><p class="eyebrow">Score Movement</p><h2>현재 점수와 Best-so-far 점수</h2></header>
           <div class="score-grid">
             <article class="card score-card"><h3>Iteration score</h3>{line_chart_from_values(iteration_values, "iteration")}{score_rows(iterations, lambda item: item.iteration_score)}</article>
@@ -697,7 +697,7 @@ def dynamic_slides(data: RunData) -> list[str]:
         </section>
         """,
         f"""
-        <section class="slide spread result-slide">
+        <section class="slide spread result-slide" data-chapter="results">
           <header><p class="eyebrow">Result Analysis</p><h2>Best-of-N이 보여주는 것</h2></header>
           <div class="compare">
             <article class="card"><h3>Best에서 맞은 요소</h3>{pill_items(selected_eval(best).get("matched_points", best.evaluation.get("matched_points", [])))}</article>
@@ -707,7 +707,7 @@ def dynamic_slides(data: RunData) -> list[str]:
         </section>
         """,
         """
-        <section class="slide center conclusion-slide">
+        <section class="slide center conclusion-slide" data-chapter="results">
           <div>
             <p class="eyebrow">Conclusion</p>
             <h2>좋은 Loop는<br>생성만 반복하지 않고<br>선택과 기억을 함께 설계한다.</h2>
@@ -748,6 +748,16 @@ def build_html(data: RunData | None, reason: str = "no successful complete run f
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <nav class="chapter-nav" aria-label="Chapter navigation">
+    <a href="#chapter-expansion" data-chapter-link="expansion">Expansion</a>
+    <a href="#chapter-prompt" data-chapter-link="prompt">Prompt</a>
+    <a href="#chapter-context" data-chapter-link="context">Context</a>
+    <a href="#chapter-harness" data-chapter-link="harness">Harness</a>
+    <a href="#chapter-loop" data-chapter-link="loop">Loop</a>
+    <a href="#chapter-harness-loop" data-chapter-link="harness-loop">Harness vs Loop</a>
+    <a href="#chapter-demo" data-chapter-link="demo">Demo</a>
+    <a href="#chapter-results" data-chapter-link="results">Results</a>
+  </nav>
   <main class="deck">
     {''.join(slides)}
   </main>
