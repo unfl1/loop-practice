@@ -17,6 +17,7 @@ ASSETS_DIR = PRESENTATION_DIR / "assets"
 LATEST_RUN_ASSETS_DIR = ASSETS_DIR / "latest-run"
 INDEX_PATH = PRESENTATION_DIR / "index.html"
 BEST_OF_N_SCHEMA_VERSION = "best_of_n_v1"
+PRESENTATION_ASSET_VERSION = "20260820-results-ko-v1"
 PAGE_ORDER = (
     ("index", "Home", "index.html"),
     ("expansion", "Expansion", "expansion.html"),
@@ -474,6 +475,29 @@ def display_next_prompt_ko(item: IterationResult) -> str:
     )
 
 
+RESULT_INSIGHT_TRANSLATIONS = {
+    "short compact body": "짧고 응집된 몸 비율",
+    "close narrow front paws": "서로 가깝고 좁게 모인 앞발",
+    "rounded lower cheeks": "둥글게 이어지는 아래쪽 볼 윤곽",
+    "small close-set eyes": "작은 크기와 좁은 간격이 잘 드러난 눈",
+    "nose remains slightly broad": "코가 아직 조금 넓게 표현되어 있습니다.",
+    "ear tips could be a fraction shorter": "귀 끝 길이를 약간 더 줄일 필요가 있습니다.",
+    "side cheek tufts are mildly prominent": "옆 볼 부분의 털 돌출이 약간 강하게 보입니다.",
+}
+
+
+def display_result_insights_ko(item: IterationResult, field: str, limit: int) -> list[str]:
+    candidate = selected_eval(item)
+    raw_items = candidate.get(field, item.evaluation.get(field, []))
+    translated = [RESULT_INSIGHT_TRANSLATIONS.get(str(value).strip().lower()) for value in raw_items]
+    if raw_items and all(translated):
+        return [value for value in translated if value][:limit]
+
+    values = sorted(display_score_items(item), key=lambda pair: pair[1], reverse=field == "matched_points")
+    guidance_index = 2 if field == "matched_points" else 1
+    return [DISPLAY_GUIDANCE[key][guidance_index] for key, _ in values[:limit]]
+
+
 def run_payload(data: RunData) -> dict:
     return {
         "runName": data.run_dir.name,
@@ -714,13 +738,15 @@ def fixed_slides_v2() -> list[str]:
 
 
 def result_card(item: IterationResult, label: str) -> str:
+    priority = display_priority_ko(item)
+    description = priority[0] if priority else "현재 결과의 주요 형태를 유지하며 원본과의 유사도를 높입니다."
     return f"""
     <article class="result-card">
-      <h3>{escape(label)} · Iteration {item.iteration}</h3>
+      <h3>{escape(label)} · {item.iteration}회차</h3>
       {image_box(item.image_asset, label)}
-      {metric("iteration", item.iteration_score)}
-      {metric("best", item.best_so_far_score)}
-      <p class="priority">{escape(first_priority(item))}</p>
+      {metric("현재 점수", item.iteration_score)}
+      {metric("최고 누적 점수", item.best_so_far_score)}
+      <p class="priority">{escape(description)}</p>
     </article>
     """
 
@@ -783,13 +809,13 @@ def dynamic_slides(data: RunData) -> list[str]:
         """,
         f"""
         <section class="slide spread result-slide" data-chapter="results">
-          <header><p class="eyebrow">Results Overview</p><h2>Original, First, Best-so-far, Last</h2></header>
-          <p class="lead">첫 결과와 마지막 결과만 비교하지 않고, 지금까지 관찰된 최고 결과를 함께 봅니다. 마지막 iteration이 항상 최고라는 보장은 없기 때문에 Best-so-far를 별도로 보존합니다.</p>
+          <header><p class="eyebrow">결과 요약</p><h2>원본 · 첫 결과 · 최고 결과 · 마지막 결과 비교</h2></header>
+          <p class="lead">첫 결과와 마지막 결과뿐 아니라, 반복 과정에서 관찰된 최고 결과도 함께 살펴봅니다. 마지막 iteration이 항상 최고라는 보장은 없기 때문에 Best-so-far(현재 최고 결과)를 별도로 보존합니다.</p>
           <div class="summary-grid">
-            <article class="result-card"><h3>Original</h3>{image_box(data.reference_asset, "Original Photo", "원본 이미지 없음")}</article>
-            {result_card(first, "First")}
-            {result_card(best, "Best")}
-            {result_card(last, "Last")}
+            <article class="result-card"><h3>원본</h3>{image_box(data.reference_asset, "원본 사진", "원본 이미지 없음")}</article>
+            {result_card(first, "첫 결과")}
+            {result_card(best, "최고 결과")}
+            {result_card(last, "마지막 결과")}
           </div>
         </section>
         """,
@@ -805,12 +831,12 @@ def dynamic_slides(data: RunData) -> list[str]:
         """,
         f"""
         <section class="slide spread result-slide" data-chapter="results">
-          <header><p class="eyebrow">Result Analysis</p><h2>Best-of-N이 보여주는 것</h2></header>
+          <header><p class="eyebrow">결과 분석</p><h2>Best-of-N에서 확인한 핵심</h2></header>
           <div class="compare">
-            <article class="card"><h3>Best에서 맞은 요소</h3>{pill_items(selected_eval(best).get("matched_points", best.evaluation.get("matched_points", [])))}</article>
-            <article class="card"><h3>아직 어려운 요소</h3>{pill_items(selected_eval(best).get("differences", best.evaluation.get("differences", [])))}</article>
+            <article class="card"><h3>최고 결과에서 잘 맞은 요소</h3>{pill_items(display_result_insights_ko(best, "matched_points", 4))}</article>
+            <article class="card"><h3>아직 더 보완이 필요한 요소</h3>{pill_items(display_result_insights_ko(best, "differences", 3))}</article>
           </div>
-          <div class="callout">Iteration score는 흔들릴 수 있지만 Best-so-far는 실제 최고 결과를 유지한다. 그래서 다음 생성 기준이 덜 흔들린다.</div>
+          <div class="callout">각 iteration의 점수는 달라질 수 있지만, Best-so-far(현재 최고 결과)를 별도로 보존하면 다음 생성의 기준이 불필요하게 흔들리지 않습니다.</div>
         </section>
         """,
         """
@@ -864,7 +890,7 @@ def page_html(page_id: str, title: str, content: str, payload: dict | None = Non
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{escape(title)} · Loop Engineering</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v={PRESENTATION_ASSET_VERSION}">
 </head>
 <body data-page="{page_id}" data-previous-page="{previous_page}" data-next-page="{next_page}">
   {navigation_html(page_id)}
@@ -873,7 +899,7 @@ def page_html(page_id: str, title: str, content: str, payload: dict | None = Non
   </main>
   <div class="page-position">{page_index + 1} / {len(PAGE_ORDER)}</div>
 {run_data}
-  <script src="script.js"></script>
+  <script src="script.js?v={PRESENTATION_ASSET_VERSION}"></script>
 </body>
 </html>
 """
