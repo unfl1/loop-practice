@@ -160,6 +160,23 @@ body {
   outline-offset: 3px;
 }
 
+.demo-readme {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  justify-content: space-between;
+}
+
+.demo-readme p {
+  color: var(--muted);
+  margin: 0;
+}
+
+.demo-readme .start-button {
+  margin-top: 0;
+}
+
 .slide:nth-child(even) {
   background:
     radial-gradient(circle at 86% 18%, rgba(167, 139, 250, 0.11), transparent 30%),

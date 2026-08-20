@@ -732,6 +732,10 @@ def fixed_slides_v2() -> list[str]:
           <div class="flow demo-flow"><div class="node">Original Photo</div><div class="arrow">→</div><div class="node mint">Generator</div><div class="arrow">→</div><div class="node">Simple Sketch</div><div class="arrow">→</div><div class="node violet">Evaluator</div><div class="arrow">→</div><div class="node">Feedback</div><div class="arrow">→</div><div class="node mint">Prompt Refiner</div><div class="arrow">↺</div></div>
           <div class="demo-goals"><article><b>Best-of-N</b><p>Generator가 매 iteration 후보 3장을 생성합니다.</p></article><article><b>Evaluator</b><p>원본과 각 후보의 구조적 차이를 독립 평가합니다.</p></article><article><b>Prompt Refiner</b><p>선택된 후보의 핵심 차이만 다음 지시로 바꿉니다.</p></article><article><b>Best-so-far</b><p>전체 최고 결과를 다음 generation 기준으로 보존합니다.</p></article></div>
           <div class="callout">관찰 포인트 · 반복 횟수가 아니라 평가 결과가 실제 다음 Prompt와 생성 결과에 반영되는지를 봅니다.</div>
+          <div class="demo-readme">
+            <p>실제 구현 구조는 GitHub README에서 확인합니다.</p>
+            <a class="start-button" href="https://github.com/unfl1/loop-practice" target="_blank" rel="noopener noreferrer">GitHub README 보기 ↗</a>
+          </div>
         </section>
         """,
     ]
