@@ -117,6 +117,29 @@ body {
   max-width: 940px;
 }
 
+.home-flow {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.home-flow span {
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(107, 220, 255, 0.3);
+  border-radius: 999px;
+  color: #e8f7ff;
+  font-size: clamp(15px, 1.3vw, 20px);
+  font-weight: 850;
+  padding: 10px 16px;
+}
+
+.home-flow b {
+  color: var(--mint);
+  font-size: 20px;
+}
+
 .start-button {
   background: linear-gradient(110deg, rgba(107, 220, 255, 0.2), rgba(95, 243, 208, 0.2));
   border: 1px solid rgba(95, 243, 208, 0.58);

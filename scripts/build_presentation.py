@@ -18,7 +18,7 @@ LATEST_RUN_ASSETS_DIR = ASSETS_DIR / "latest-run"
 INDEX_PATH = PRESENTATION_DIR / "index.html"
 BEST_OF_N_SCHEMA_VERSION = "best_of_n_v1"
 PAGE_ORDER = (
-    ("index", "Intro", "index.html"),
+    ("index", "Home", "index.html"),
     ("expansion", "Expansion", "expansion.html"),
     ("prompt", "Prompt", "prompt.html"),
     ("context", "Context", "context.html"),
@@ -534,7 +534,8 @@ def fixed_slides_v2() -> list[str]:
           <div><p class="eyebrow">AI System Design</p><h1>Loop Engineering</h1>
           <p class="title-sub">한 번 잘 시키는 것에서,<br>결과가 다음 실행을 바꾸는 구조로</p>
           <p class="lead intro-copy">Prompt에서 Context와 Harness를 거쳐 Loop까지, AI에게 맡기는 범위가 어떻게 넓어지는지 살펴봅니다. 마지막에는 포메라니안 Best-of-N 실험으로 평가와 기억이 다음 결과를 바꾸는 과정을 확인합니다.</p>
-          <a class="start-button" href="expansion.html">Expansion에서 시작하기 →</a></div>
+          <div class="home-flow" aria-label="Presentation flow"><span>Prompt</span><b>→</b><span>Context</span><b>→</b><span>Harness</span><b>→</b><span>Loop</span></div>
+          <a class="start-button" href="expansion.html">Start Presentation →</a></div>
         </section>
         """,
         """
@@ -751,7 +752,7 @@ def no_data_slides(reason: str) -> list[str]:
 
 def navigation_html(active_page: str) -> str:
     links = []
-    for page_id, label, filename in PAGE_ORDER[1:]:
+    for page_id, label, filename in PAGE_ORDER:
         active = ' class="active" aria-current="page"' if page_id == active_page else ""
         links.append(f'<a href="{filename}" data-page="{page_id}"{active}>{label}</a>')
     return '<nav class="chapter-nav" aria-label="Chapter navigation">' + "".join(links) + "</nav>"
