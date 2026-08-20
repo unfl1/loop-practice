@@ -40,7 +40,9 @@ body {
 .deck {
   background: #01050e;
   display: block;
+  height: auto;
   min-height: 100vh;
+  overflow: visible;
   padding: 0;
 }
 
@@ -108,6 +110,31 @@ body {
 
 .slide + .slide {
   margin-top: clamp(56px, 9vh, 112px);
+}
+
+.intro-copy {
+  margin-top: 30px;
+  max-width: 940px;
+}
+
+.start-button {
+  background: linear-gradient(110deg, rgba(107, 220, 255, 0.2), rgba(95, 243, 208, 0.2));
+  border: 1px solid rgba(95, 243, 208, 0.58);
+  border-radius: 999px;
+  color: #e8fff9;
+  display: inline-block;
+  font-size: clamp(16px, 1.3vw, 20px);
+  font-weight: 850;
+  margin-top: 32px;
+  padding: 14px 22px;
+  text-decoration: none;
+}
+
+.start-button:hover,
+.start-button:focus-visible {
+  background: linear-gradient(110deg, rgba(107, 220, 255, 0.32), rgba(95, 243, 208, 0.3));
+  outline: 2px solid rgba(107, 220, 255, 0.48);
+  outline-offset: 3px;
 }
 
 .slide:nth-child(even) {
@@ -852,7 +879,7 @@ input[type="range"] {
 }
 
 .footer,
-.progress {
+.page-position {
   color: rgba(238, 247, 255, 0.62);
   font-size: 13px;
   position: fixed;
@@ -864,7 +891,7 @@ input[type="range"] {
   left: 42px;
 }
 
-.progress {
+.page-position {
   backdrop-filter: blur(12px);
   background: rgba(2, 8, 23, 0.82);
   border: 1px solid rgba(107, 220, 255, 0.32);

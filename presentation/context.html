@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Context · Loop Engineering</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="context" data-previous-page="prompt.html" data-next-page="harness.html">
+  <nav class="chapter-nav" aria-label="Chapter navigation"><a href="expansion.html" data-page="expansion">Expansion</a><a href="prompt.html" data-page="prompt">Prompt</a><a href="context.html" data-page="context" class="active" aria-current="page">Context</a><a href="harness.html" data-page="harness">Harness</a><a href="loop.html" data-page="loop">Loop</a><a href="harness-vs-loop.html" data-page="harness-loop">Harness vs Loop</a><a href="demo.html" data-page="demo">Demo</a><a href="results.html" data-page="results">Results</a></nav>
+  <main class="deck">
+
+        <section id="chapter-context" class="slide spread concept-slide" data-chapter="context">
+          <header><p class="eyebrow">Context Engineering</p><h2>AI가 판단할 때 무엇을 보여줄 것인가?</h2></header>
+          <div class="question">핵심 질문 · “이 판단을 정확히 하려면 지금 어떤 정보를 함께 제공해야 하는가?”</div>
+          <div class="narrative cols-2">
+            <article><h3>Prompt와의 차이</h3><p>Prompt는 AI에게 무엇을 하라고 말하는 지시입니다. Context는 그 지시를 수행할 때 참고하는 사용자 요구, 이전 대화, 문서, 코드, 검색 결과, 메모리와 현재 상태입니다.</p></article>
+            <article><h3>해결하는 문제</h3><p>Context가 빠지면 기존 요구를 놓치거나 잘못된 가정을 하고 현재 프로젝트와 맞지 않는 답을 만들 수 있습니다. 같은 Prompt도 무엇을 함께 보여주느냐에 따라 판단 품질이 달라집니다.</p></article>
+          </div>
+          <div class="context-map"><div class="center-node">AI</div><span>사용자 요구</span><span>이전 대화</span><span>참고 문서</span><span>검색 결과</span><span>메모리</span><span>코드</span><span>현재 상태</span><span>Tool 결과</span></div>
+          <div class="callout">관점은 “어떻게 말할까?”에서 “무엇을 알고 판단하게 할까?”로 넓어집니다. 그러나 충분히 알아도 행동할 환경이 없다면 작업 범위는 제한됩니다.</div>
+        </section>
+
+  </main>
+  <div class="page-position">4 / 9</div>
+
+  <script src="script.js"></script>
+</body>
+</html>

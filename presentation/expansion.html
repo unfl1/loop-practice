@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Expansion · Loop Engineering</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="expansion" data-previous-page="index.html" data-next-page="prompt.html">
+  <nav class="chapter-nav" aria-label="Chapter navigation"><a href="expansion.html" data-page="expansion" class="active" aria-current="page">Expansion</a><a href="prompt.html" data-page="prompt">Prompt</a><a href="context.html" data-page="context">Context</a><a href="harness.html" data-page="harness">Harness</a><a href="loop.html" data-page="loop">Loop</a><a href="harness-vs-loop.html" data-page="harness-loop">Harness vs Loop</a><a href="demo.html" data-page="demo">Demo</a><a href="results.html" data-page="results">Results</a></nav>
+  <main class="deck">
+
+        <section id="chapter-expansion" class="slide spread evolution-slide" data-chapter="expansion">
+          <header><p class="eyebrow">Expansion Map</p><h2>Prompt → Context → Harness → Loop</h2></header>
+          <p class="lead">공식적인 역사나 우열이 아니라, AI에게 맡기는 범위를 넓힐 때 추가되는 설계 관점입니다.</p>
+          <div class="narrative cols-2">
+            <article><h3>왜 관점이 넓어지는가</h3><p>좋은 지시는 방향을 정하지만 판단에 필요한 정보까지 채우지는 못합니다. 정보를 충분히 줘도 실제 파일과 도구에 접근하지 못하면 행동할 수 없고, 행동이 가능해도 결과를 평가해 다시 시도하는 구조는 별도로 설계해야 합니다.</p></article>
+            <article><h3>네 관점이 맡는 역할</h3><p>Prompt는 행동 방향을, Context는 판단 재료를, Harness는 실행과 관찰이 가능한 공간을 제공합니다. Loop는 실행 결과 이후 무엇을 평가하고 기억하며 다음 입력을 어떻게 바꿀지 결정합니다.</p></article>
+          </div>
+          <div class="evolution">
+            <article class="phase"><b>01 · Prompt</b><h3>어떻게 지시할까?</h3><p>역할, 목표, 제약과 출력 형식을 설계해 해야 할 일을 분명하게 만듭니다.</p><em>없는 정보까지 제공하지는 못합니다.</em></article>
+            <article class="phase"><b>02 · Context</b><h3>무엇을 보여줄까?</h3><p>문서, 대화, 코드와 현재 상태처럼 판단에 필요한 정보를 제공합니다.</p><em>정보만으로 실제 행동할 수는 없습니다.</em></article>
+            <article class="phase"><b>03 · Harness</b><h3>어디서 일하게 할까?</h3><p>파일, Git, 테스트, 로그와 권한을 연결해 작업과 관찰을 가능하게 합니다.</p><em>한 번의 행동이 자동 개선을 뜻하지는 않습니다.</em></article>
+            <article class="phase"><b>04 · Loop</b><h3>무엇을 다시 하게 할까?</h3><p>평가와 피드백을 다음 입력에 반영해 반복이 개선을 만들게 합니다.</p><em>평가가 다음 실행을 실제로 바꿉니다.</em></article>
+          </div>
+          <div class="callout">Prompt는 방향, Context는 판단 재료, Harness는 행동 공간, Loop는 결과 이후의 다음 행동을 설계합니다.</div>
+        </section>
+
+  </main>
+  <div class="page-position">2 / 9</div>
+
+  <script src="script.js"></script>
+</body>
+</html>

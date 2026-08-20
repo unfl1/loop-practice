@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Loop · Loop Engineering</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="loop" data-previous-page="harness.html" data-next-page="harness-vs-loop.html">
+  <nav class="chapter-nav" aria-label="Chapter navigation"><a href="expansion.html" data-page="expansion">Expansion</a><a href="prompt.html" data-page="prompt">Prompt</a><a href="context.html" data-page="context">Context</a><a href="harness.html" data-page="harness">Harness</a><a href="loop.html" data-page="loop" class="active" aria-current="page">Loop</a><a href="harness-vs-loop.html" data-page="harness-loop">Harness vs Loop</a><a href="demo.html" data-page="demo">Demo</a><a href="results.html" data-page="results">Results</a></nav>
+  <main class="deck">
+
+        <section id="chapter-loop" class="slide spread concept-slide loop-slide" data-chapter="loop">
+          <header><p class="eyebrow">Loop Engineering</p><h2>평가 결과가 다음 실행을 바꾸게 하려면?</h2></header>
+          <p class="lead">Loop Engineering은 같은 작업을 여러 번 실행하는 것이 아니라, 이전 실행을 평가하고 그 결과가 다음 실행의 입력을 바꾸도록 반복 구조 자체를 설계하는 것입니다.</p>
+          <div class="loop-diagram"><div class="node">Goal</div><div class="arrow">→</div><div class="node mint">Generator</div><div class="arrow">→</div><div class="node">Result</div><div class="arrow">→</div><div class="node violet">Evaluator</div><div class="arrow">→</div><div class="node">Feedback</div><div class="arrow">→</div><div class="node mint">Refiner</div><div class="arrow">↺</div></div>
+          <div class="loop-elements"><article><b>Goal</b><p>개선 목표</p></article><article><b>Generator / Actor</b><p>생성과 행동</p></article><article><b>Evaluator</b><p>목표와 비교</p></article><article><b>Feedback</b><p>차이 전달</p></article><article><b>Refiner</b><p>다음 지시 변환</p></article><article><b>State</b><p>결과와 iteration 유지</p></article><article><b>Stop Condition</b><p>목표·횟수·비용</p></article><article><b>Best Result</b><p>최고 결과 보존</p></article></div>
+          <div class="repeat-compare"><article><h3>단순 반복</h3><p>같은 Prompt → 실행 → 같은 Prompt → 실행</p><em>결과가 다음 입력을 바꾸지 않습니다.</em></article><article><h3>Loop Engineering</h3><p>실행 → 평가 → Feedback → Prompt 변경 → 재실행</p><em>핵심은 횟수가 아니라 피드백의 영향입니다.</em></article></div>
+        </section>
+
+  </main>
+  <div class="page-position">6 / 9</div>
+
+  <script src="script.js"></script>
+</body>
+</html>

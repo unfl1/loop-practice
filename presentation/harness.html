@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Harness · Loop Engineering</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="harness" data-previous-page="context.html" data-next-page="loop.html">
+  <nav class="chapter-nav" aria-label="Chapter navigation"><a href="expansion.html" data-page="expansion">Expansion</a><a href="prompt.html" data-page="prompt">Prompt</a><a href="context.html" data-page="context">Context</a><a href="harness.html" data-page="harness" class="active" aria-current="page">Harness</a><a href="loop.html" data-page="loop">Loop</a><a href="harness-vs-loop.html" data-page="harness-loop">Harness vs Loop</a><a href="demo.html" data-page="demo">Demo</a><a href="results.html" data-page="results">Results</a></nav>
+  <main class="deck">
+
+        <section id="chapter-harness" class="slide spread concept-slide harness-slide" data-chapter="harness">
+          <header><p class="eyebrow">Harness Engineering</p><h2>AI가 어떤 환경에서 실제로 일하게 할 것인가?</h2></header>
+          <div class="question">핵심 질문 · “AI에게 어떤 도구, 관찰 수단과 권한을 가진 작업 환경을 줄 것인가?”</div>
+          <div class="narrative cols-2">
+            <article><h3>답변에서 행동으로</h3><p>Harness Engineering은 AI가 텍스트를 생성하는 데서 끝나지 않고 실제 작업을 수행하고 그 결과를 관찰하도록 주변 실행 환경을 설계하는 것입니다. Prompt와 Context를 현실의 행동으로 연결합니다.</p></article>
+            <article><h3>검증 가능한 작업</h3><p>파일 저장, 테스트 실행, 브라우저 확인, 로그 분석과 버전 관리를 연결하면 실행 결과를 근거로 다음 결정을 내릴 수 있습니다. 권한은 가능한 행동의 범위와 안전 경계를 정합니다.</p></article>
+          </div>
+          <div class="harness-shell"><div class="agent-core">AI Agent</div><div class="tool-ring"><span>Tools · 실행 행동</span><span>File System · 읽기/수정</span><span>Git · 변경 이력</span><span>Test · 결과 검증</span><span>Logs · 실패 관찰</span><span>Browser · 화면 확인</span><span>Permissions · 행동 경계</span><span>Execution · 코드 실행</span></div></div>
+          <div class="flow agent-flow"><div class="node">코드 작성</div><div class="arrow">→</div><div class="node">파일 저장</div><div class="arrow">→</div><div class="node mint">테스트</div><div class="arrow">→</div><div class="node violet">로그 확인</div><div class="arrow">→</div><div class="node">코드 수정</div></div>
+          <div class="callout">Harness는 Loop의 기반이 됩니다. Evaluator가 테스트와 로그를 읽어 다음 행동을 결정하려면 결과를 실제로 관찰할 수 있어야 하기 때문입니다.</div>
+        </section>
+
+  </main>
+  <div class="page-position">5 / 9</div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Results · Loop Engineering</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="results" data-previous-page="demo.html" data-next-page="">
+  <nav class="chapter-nav" aria-label="Chapter navigation"><a href="expansion.html" data-page="expansion">Expansion</a><a href="prompt.html" data-page="prompt">Prompt</a><a href="context.html" data-page="context">Context</a><a href="harness.html" data-page="harness">Harness</a><a href="loop.html" data-page="loop">Loop</a><a href="harness-vs-loop.html" data-page="harness-loop">Harness vs Loop</a><a href="demo.html" data-page="demo">Demo</a><a href="results.html" data-page="results" class="active" aria-current="page">Results</a></nav>
+  <main class="deck">
+
+        <section id="chapter-results" class="slide timeline-slide spread result-slide" data-chapter="results">
+          <header>
+            <p class="eyebrow">Results · run_20260820_075822</p>
+            <h2>Selected result와 Best-so-far를 함께 봅니다</h2>
+          </header>
+          <div class="timeline-layout">
+            <aside class="original-panel">
+              <h3>Original Photo</h3>
+              <div class="image-frame"><img src="assets/latest-run/original_pomeranian.png" alt="Original Photo"></div>
+            </aside>
+            <section class="iteration-panel">
+              <div class="iteration-head">
+                <div><p class="stage-tag">Selected Iteration</p><h3 id="timeline-title">Iteration</h3></div>
+                <div class="score-chip" id="timeline-overall">score</div>
+              </div>
+              <div class="comparison-pair">
+                <article>
+                  <h3>Selected image</h3>
+                  <div class="image-frame"><img id="timeline-image" src="" alt="Selected iteration"></div>
+                </article>
+                <article>
+                  <h3>Best-so-far image</h3>
+                  <div class="image-frame"><img id="timeline-best-image" src="" alt="Best-so-far iteration"></div>
+                </article>
+              </div>
+              <div class="timeline-metrics">
+                <div>
+    <div class="metric">
+      <span>overall</span>
+      <div class="track"><i style="width:0%"></i></div>
+      <b>0.00</b>
+    </div>
+    </div>
+                <div>
+    <div class="metric">
+      <span>best-so-far</span>
+      <div class="track"><i style="width:0%"></i></div>
+      <b>0.00</b>
+    </div>
+    </div>
+                <div>
+    <div class="metric">
+      <span>structure</span>
+      <div class="track"><i style="width:0%"></i></div>
+      <b>0.00</b>
+    </div>
+    </div>
+                <div>
+    <div class="metric">
+      <span>sketch style</span>
+      <div class="track"><i style="width:0%"></i></div>
+      <b>0.00</b>
+    </div>
+    </div>
+              </div>
+            </section>
+          </div>
+          <div class="slider-wrap">
+            <span>Iteration 1</span>
+            <input id="iteration-slider" type="range" min="1" max="8" value="1" step="1">
+            <span>Iteration 8</span>
+          </div>
+          <div class="timeline-details">
+            <article><h3>Selection</h3><div id="timeline-selection"></div></article>
+            <article><h3>Priority Differences</h3><div id="timeline-priority"></div></article>
+            <article><h3>Feedback</h3><div id="timeline-feedback"></div></article>
+            <article><h3>Next Prompt</h3><pre id="timeline-prompt"></pre></article>
+          </div>
+        </section>
+
+        <section class="slide spread result-slide" data-chapter="results">
+          <header><p class="eyebrow">Results Overview</p><h2>Original, First, Best-so-far, Last</h2></header>
+          <p class="lead">첫 결과와 마지막 결과만 비교하지 않고, 지금까지 관찰된 최고 결과를 함께 봅니다. 마지막 iteration이 항상 최고라는 보장은 없기 때문에 Best-so-far를 별도로 보존합니다.</p>
+          <div class="summary-grid">
+            <article class="result-card"><h3>Original</h3><div class="image-frame"><img src="assets/latest-run/original_pomeranian.png" alt="Original Photo"></div></article>
+
+    <article class="result-card">
+      <h3>First · Iteration 1</h3>
+      <div class="image-frame"><img src="assets/latest-run/iteration_001_selected.png" alt="First"></div>
+
+    <div class="metric">
+      <span>iteration</span>
+      <div class="track"><i style="width:80%"></i></div>
+      <b>79.50</b>
+    </div>
+
+
+    <div class="metric">
+      <span>best</span>
+      <div class="track"><i style="width:80%"></i></div>
+      <b>79.50</b>
+    </div>
+
+      <p class="priority">Make the upright ears slightly smaller, higher, and closer together.</p>
+    </article>
+
+
+    <article class="result-card">
+      <h3>Best · Iteration 8</h3>
+      <div class="image-frame"><img src="assets/latest-run/iteration_008_selected.png" alt="Best"></div>
+
+    <div class="metric">
+      <span>iteration</span>
+      <div class="track"><i style="width:91%"></i></div>
+      <b>91.23</b>
+    </div>
+
+
+    <div class="metric">
+      <span>best</span>
+      <div class="track"><i style="width:91%"></i></div>
+      <b>91.23</b>
+    </div>
+
+      <p class="priority">Reduce both eye circles slightly while preserving their close-set placement.</p>
+    </article>
+
+
+    <article class="result-card">
+      <h3>Last · Iteration 8</h3>
+      <div class="image-frame"><img src="assets/latest-run/iteration_008_selected.png" alt="Last"></div>
+
+    <div class="metric">
+      <span>iteration</span>
+      <div class="track"><i style="width:91%"></i></div>
+      <b>91.23</b>
+    </div>
+
+
+    <div class="metric">
+      <span>best</span>
+      <div class="track"><i style="width:91%"></i></div>
+      <b>91.23</b>
+    </div>
+
+      <p class="priority">Reduce both eye circles slightly while preserving their close-set placement.</p>
+    </article>
+
+          </div>
+        </section>
+
+        <section class="slide spread result-slide" data-chapter="results">
+          <header><p class="eyebrow">Score Movement</p><h2>현재 점수와 Best-so-far 점수</h2></header>
+          <div class="score-grid">
+            <article class="card score-card"><h3>Iteration score</h3>
+    <svg class="line-chart" viewBox="0 0 520 170" role="img" aria-label="iteration score line chart">
+      <line x1="28" y1="146" x2="492" y2="146" class="axis"></line>
+      <line x1="28" y1="24" x2="28" y2="146" class="axis"></line>
+      <polyline points="28.0,49.0 94.3,44.3 160.6,43.1 226.9,40.8 293.1,39.4 359.4,37.3 425.7,35.6 492.0,34.7" class="series"></polyline>
+      <circle cx="28.0" cy="49.0" r="4"><title>Iter 1: 79.50</title></circle><circle cx="94.3" cy="44.3" r="4"><title>Iter 2: 83.37</title></circle><circle cx="160.6" cy="43.1" r="4"><title>Iter 3: 84.33</title></circle><circle cx="226.9" cy="40.8" r="4"><title>Iter 4: 86.24</title></circle><circle cx="293.1" cy="39.4" r="4"><title>Iter 5: 87.41</title></circle><circle cx="359.4" cy="37.3" r="4"><title>Iter 6: 89.11</title></circle><circle cx="425.7" cy="35.6" r="4"><title>Iter 7: 90.49</title></circle><circle cx="492.0" cy="34.7" r="4"><title>Iter 8: 91.23</title></circle>
+    </svg>
+    <div class="chart"><div class="chart-row">
+              <span>Iter 1</span>
+              <div class="track"><i style="width:80%"></i></div>
+              <b>79.50</b>
+            </div><div class="chart-row">
+              <span>Iter 2</span>
+              <div class="track"><i style="width:83%"></i></div>
+              <b>83.37</b>
+            </div><div class="chart-row">
+              <span>Iter 3</span>
+              <div class="track"><i style="width:84%"></i></div>
+              <b>84.33</b>
+            </div><div class="chart-row">
+              <span>Iter 4</span>
+              <div class="track"><i style="width:86%"></i></div>
+              <b>86.24</b>
+            </div><div class="chart-row">
+              <span>Iter 5</span>
+              <div class="track"><i style="width:87%"></i></div>
+              <b>87.41</b>
+            </div><div class="chart-row">
+              <span>Iter 6</span>
+              <div class="track"><i style="width:89%"></i></div>
+              <b>89.11</b>
+            </div><div class="chart-row">
+              <span>Iter 7</span>
+              <div class="track"><i style="width:90%"></i></div>
+              <b>90.49</b>
+            </div><div class="chart-row">
+              <span>Iter 8</span>
+              <div class="track"><i style="width:91%"></i></div>
+              <b>91.23</b>
+            </div></div></article>
+            <article class="card score-card"><h3>Best-so-far score</h3>
+    <svg class="line-chart" viewBox="0 0 520 170" role="img" aria-label="best so far score line chart">
+      <line x1="28" y1="146" x2="492" y2="146" class="axis"></line>
+      <line x1="28" y1="24" x2="28" y2="146" class="axis"></line>
+      <polyline points="28.0,49.0 94.3,44.3 160.6,43.1 226.9,40.8 293.1,39.4 359.4,37.3 425.7,35.6 492.0,34.7" class="series"></polyline>
+      <circle cx="28.0" cy="49.0" r="4"><title>Iter 1: 79.50</title></circle><circle cx="94.3" cy="44.3" r="4"><title>Iter 2: 83.37</title></circle><circle cx="160.6" cy="43.1" r="4"><title>Iter 3: 84.33</title></circle><circle cx="226.9" cy="40.8" r="4"><title>Iter 4: 86.24</title></circle><circle cx="293.1" cy="39.4" r="4"><title>Iter 5: 87.41</title></circle><circle cx="359.4" cy="37.3" r="4"><title>Iter 6: 89.11</title></circle><circle cx="425.7" cy="35.6" r="4"><title>Iter 7: 90.49</title></circle><circle cx="492.0" cy="34.7" r="4"><title>Iter 8: 91.23</title></circle>
+    </svg>
+    <div class="chart"><div class="chart-row">
+              <span>Iter 1</span>
+              <div class="track"><i style="width:80%"></i></div>
+              <b>79.50</b>
+            </div><div class="chart-row">
+              <span>Iter 2</span>
+              <div class="track"><i style="width:83%"></i></div>
+              <b>83.37</b>
+            </div><div class="chart-row">
+              <span>Iter 3</span>
+              <div class="track"><i style="width:84%"></i></div>
+              <b>84.33</b>
+            </div><div class="chart-row">
+              <span>Iter 4</span>
+              <div class="track"><i style="width:86%"></i></div>
+              <b>86.24</b>
+            </div><div class="chart-row">
+              <span>Iter 5</span>
+              <div class="track"><i style="width:87%"></i></div>
+              <b>87.41</b>
+            </div><div class="chart-row">
+              <span>Iter 6</span>
+              <div class="track"><i style="width:89%"></i></div>
+              <b>89.11</b>
+            </div><div class="chart-row">
+              <span>Iter 7</span>
+              <div class="track"><i style="width:90%"></i></div>
+              <b>90.49</b>
+            </div><div class="chart-row">
+              <span>Iter 8</span>
+              <div class="track"><i style="width:91%"></i></div>
+              <b>91.23</b>
+            </div></div></article>
+            <article class="card score-card"><h3>Update events</h3><div class="insight-list"><p>Iter 1: updated · selected candidate_03</p><p>Iter 2: updated · selected candidate_01</p><p>Iter 3: updated · selected candidate_01</p><p>Iter 4: updated · selected candidate_01</p><p>Iter 5: updated · selected candidate_02</p><p>Iter 6: updated · selected candidate_03</p><p>Iter 7: updated · selected candidate_01</p><p>Iter 8: updated · selected candidate_02</p></div></article>
+          </div>
+        </section>
+
+        <section class="slide spread result-slide" data-chapter="results">
+          <header><p class="eyebrow">Result Analysis</p><h2>Best-of-N이 보여주는 것</h2></header>
+          <div class="compare">
+            <article class="card"><h3>Best에서 맞은 요소</h3><div class="insight-list"><p>broad upper face</p><p>short balanced ears</p><p>compact seated body</p><p>centered facial features</p></div></article>
+            <article class="card"><h3>아직 어려운 요소</h3><div class="insight-list"><p>eyes could be slightly smaller</p><p>front paws could be a touch narrower</p><p>lower cheek could be subtly fuller</p></div></article>
+          </div>
+          <div class="callout">Iteration score는 흔들릴 수 있지만 Best-so-far는 실제 최고 결과를 유지한다. 그래서 다음 생성 기준이 덜 흔들린다.</div>
+        </section>
+
+        <section class="slide center conclusion-slide" data-chapter="results">
+          <div>
+            <p class="eyebrow">Conclusion</p>
+            <h2>좋은 Loop는<br>생성만 반복하지 않고<br>선택과 기억을 함께 설계한다.</h2>
+          </div>
+          <div class="conclusion-strip">
+            <span>3 Candidates</span>
+            <span>Independent Evaluation</span>
+            <span>Selected Result</span>
+            <span>Best-so-far</span>
+          </div>
+        </section>
+
+  </main>
+  <div class="page-position">9 / 9</div>
+<script id="run-data" type="application/json">{"runName": "run_20260820_075822", "schemaVersion": "best_of_n_v1", "referenceAsset": "assets/latest-run/original_pomeranian.png", "summary": {"status": "completed", "schema_version": "best_of_n_v1", "stop_reason": "requested_iterations_completed", "requested_iterations": 8, "completed_iterations": 8, "iteration_scores": [79.5, 83.3688, 84.325, 86.2375, 87.4063, 89.1063, 90.4875, 91.2313], "best_so_far_scores": [79.5, 83.3688, 84.325, 86.2375, 87.4063, 89.1063, 90.4875, 91.2313], "best_iteration": 8, "best_candidate": "candidate_02", "final_best_score": 91.2313}, "iterations": [{"iteration": 1, "imageAsset": "assets/latest-run/iteration_001_selected.png", "bestSoFarAsset": "assets/latest-run/iteration_001_selected.png", "nextPrompt": "Use the current Best-so-far sketch as the visual baseline. Keep its large rounded face, centered front-facing seated pose, balanced composition, and simple loose black line style. Make the upright rounded-triangle ears slightly smaller, higher, and closer together, and reduce the body and front paws relative to the head. Plain white background; no color, text, realistic fur, shading, polished rendering, or 3D effects.", "evaluation": {"iteration": 1, "candidates": [{"id": "candidate_01", "file": "candidate_01.png", "face_ratio_score": 70.0, "ear_score": 62.0, "eye_position_score": 72.0, "nose_position_score": 74.0, "head_body_ratio_score": 58.0, "pose_score": 80.0, "silhouette_score": 72.0, "composition_score": 90.0, "sketch_style_score": 90.0, "shape_similarity_score": 72.25, "overall_score": 74.9125, "matched_points": ["centered front-facing pose", "round face", "symmetric front paws"], "differences": ["body is too large relative to the head", "ears are too small and partly buried in the outline"]}, {"id": "candidate_02", "file": "candidate_02.png", "face_ratio_score": 60.0, "ear_score": 78.0, "eye_position_score": 70.0, "nose_position_score": 74.0, "head_body_ratio_score": 65.0, "pose_score": 82.0, "silhouette_score": 66.0, "composition_score": 90.0, "sketch_style_score": 89.0, "shape_similarity_score": 73.125, "overall_score": 75.5063, "matched_points": ["upright triangular ears", "centered seated pose", "simple line style"], "differences": ["face is too narrow", "torso is too tall and elongated"]}, {"id": "candidate_03", "file": "candidate_03.png", "face_ratio_score": 76.0, "ear_score": 74.0, "eye_position_score": 74.0, "nose_position_score": 77.0, "head_body_ratio_score": 70.0, "pose_score": 84.0, "silhouette_score": 78.0, "composition_score": 91.0, "sketch_style_score": 88.0, "shape_similarity_score": 78.0, "overall_score": 79.5, "matched_points": ["large rounded face", "small centered body", "front-facing seated pose", "balanced composition"], "differences": ["ears are wider and lower than the reference", "body and front paws remain slightly too large"]}], "selected_candidate": "candidate_03", "selected_score": 79.5, "previous_best_score": null, "best_updated": true, "best_so_far_score": 79.5, "best_iteration": 1, "best_candidate": "candidate_03", "priority_differences": ["Make the upright ears slightly smaller, higher, and closer together.", "Reduce the body and front paws relative to the large round head."], "suggestions": ["Preserve the centered front-facing pose and simple loose line style.", "Use the iteration 1 selected image as the Best-so-far baseline."]}, "iterationScore": 79.5, "bestSoFarScore": 79.5, "bestUpdated": true, "selectedCandidate": "candidate_03", "candidateAssets": {"candidate_01": "assets/latest-run/iteration_001_candidate_01.png", "candidate_02": "assets/latest-run/iteration_001_candidate_02.png", "candidate_03": "assets/latest-run/iteration_001_candidate_03.png"}}, {"iteration": 2, "imageAsset": "assets/latest-run/iteration_002_selected.png", "bestSoFarAsset": "assets/latest-run/iteration_002_selected.png", "nextPrompt": "Use the current Best-so-far sketch as the visual baseline. Preserve its large round head, compact seated body, short symmetric front paws, small high-set ears, centered pose, and simple black-on-white line style. Move the eyes slightly closer together without changing their height, and scale the full puppy slightly larger within the square frame. Plain white background; no color, text, realistic fur, shading, polished rendering, or 3D effects.", "evaluation": {"iteration": 2, "candidates": [{"id": "candidate_01", "file": "candidate_01.png", "face_ratio_score": 80.0, "ear_score": 80.0, "eye_position_score": 77.0, "nose_position_score": 80.0, "head_body_ratio_score": 82.0, "pose_score": 86.0, "silhouette_score": 82.0, "composition_score": 92.0, "sketch_style_score": 89.0, "shape_similarity_score": 82.375, "overall_score": 83.3688, "matched_points": ["large round head", "compact seated body", "short symmetric front paws", "small high-set ears", "centered pose"], "differences": ["eyes are slightly too widely spaced", "puppy occupies slightly too little of the frame"]}, {"id": "candidate_02", "file": "candidate_02.png", "face_ratio_score": 78.0, "ear_score": 79.0, "eye_position_score": 76.0, "nose_position_score": 79.0, "head_body_ratio_score": 75.0, "pose_score": 85.0, "silhouette_score": 79.0, "composition_score": 91.0, "sketch_style_score": 89.0, "shape_similarity_score": 80.25, "overall_score": 81.5625, "matched_points": ["round face", "upright ears", "front-facing seated pose", "plain background"], "differences": ["body remains taller than the reference ratio", "front paws are too long"]}, {"id": "candidate_03", "file": "candidate_03.png", "face_ratio_score": 76.0, "ear_score": 80.0, "eye_position_score": 74.0, "nose_position_score": 78.0, "head_body_ratio_score": 72.0, "pose_score": 82.0, "silhouette_score": 76.0, "composition_score": 85.0, "sketch_style_score": 35.0, "shape_similarity_score": 77.875, "overall_score": 71.4438, "matched_points": ["high-set ears", "centered pose", "large facial silhouette"], "differences": ["black background violates the plain white background requirement", "dark presentation weakens the simple black-on-white sketch style", "body is still too tall"]}], "selected_candidate": "candidate_01", "selected_score": 83.3688, "previous_best_score": 79.5, "best_updated": true, "best_so_far_score": 83.3688, "best_iteration": 2, "best_candidate": "candidate_01", "priority_differences": ["Move the eyes slightly closer together while preserving their height.", "Scale the full puppy slightly larger within the square frame."], "suggestions": ["Preserve the improved compact body, short paws, small high-set ears, and centered pose.", "Maintain a true plain white background with simple black lines."]}, "iterationScore": 83.3688, "bestSoFarScore": 83.3688, "bestUpdated": true, "selectedCandidate": "candidate_01", "candidateAssets": {"candidate_01": "assets/latest-run/iteration_002_candidate_01.png", "candidate_02": "assets/latest-run/iteration_002_candidate_02.png", "candidate_03": "assets/latest-run/iteration_002_candidate_03.png"}}, {"iteration": 3, "imageAsset": "assets/latest-run/iteration_003_selected.png", "bestSoFarAsset": "assets/latest-run/iteration_003_selected.png", "nextPrompt": "Use the current Best-so-far sketch as the visual baseline. Preserve its improved close eye spacing, centered front-facing pose, larger framing, plain white background, and simple black line style. Reduce the torso and front paws without shrinking the overall framing, make the ears slightly narrower, and round the lower cheeks subtly. No color, text, realistic fur, shading, polished rendering, or 3D effects.", "evaluation": {"iteration": 3, "candidates": [{"id": "candidate_01", "file": "candidate_01.png", "face_ratio_score": 82.0, "ear_score": 82.0, "eye_position_score": 83.0, "nose_position_score": 82.0, "head_body_ratio_score": 76.0, "pose_score": 87.0, "silhouette_score": 82.0, "composition_score": 94.0, "sketch_style_score": 89.0, "shape_similarity_score": 83.5, "overall_score": 84.325, "matched_points": ["closer eye spacing", "large round facial silhouette", "centered front-facing pose", "strong frame usage", "plain white background"], "differences": ["body and front paws grew too large relative to the head", "ears remain slightly too broad", "face could be subtly rounder through the lower cheeks"]}, {"id": "candidate_02", "file": "candidate_02.png", "face_ratio_score": 80.0, "ear_score": 81.0, "eye_position_score": 84.0, "nose_position_score": 82.0, "head_body_ratio_score": 70.0, "pose_score": 86.0, "silhouette_score": 79.0, "composition_score": 93.0, "sketch_style_score": 90.0, "shape_similarity_score": 81.875, "overall_score": 83.0938, "matched_points": ["good eye spacing", "clean simple sketch style", "balanced centered framing"], "differences": ["torso is too tall", "front paws are too long", "face-to-body separation is too strong"]}, {"id": "candidate_03", "file": "candidate_03.png", "face_ratio_score": 81.0, "ear_score": 82.0, "eye_position_score": 84.0, "nose_position_score": 83.0, "head_body_ratio_score": 69.0, "pose_score": 85.0, "silhouette_score": 78.0, "composition_score": 92.0, "sketch_style_score": 89.0, "shape_similarity_score": 81.75, "overall_score": 82.8375, "matched_points": ["closer eye placement", "clear nose placement", "simple black-on-white lines"], "differences": ["body is substantially too large", "front legs are elongated", "overall silhouette is more rectangular than the reference"]}], "selected_candidate": "candidate_01", "selected_score": 84.325, "previous_best_score": 83.3688, "best_updated": true, "best_so_far_score": 84.325, "best_iteration": 3, "best_candidate": "candidate_01", "priority_differences": ["Reduce the torso and front paws while keeping the improved larger framing.", "Make the ears slightly narrower and less broad.", "Round the lower cheeks subtly to better match the reference face shape."], "suggestions": ["Preserve the improved eye spacing, centered pose, white background, and simple line style.", "Use the iteration 3 selected image as the Best-so-far baseline."]}, "iterationScore": 84.325, "bestSoFarScore": 84.325, "bestUpdated": true, "selectedCandidate": "candidate_01", "candidateAssets": {"candidate_01": "assets/latest-run/iteration_003_candidate_01.png", "candidate_02": "assets/latest-run/iteration_003_candidate_02.png", "candidate_03": "assets/latest-run/iteration_003_candidate_03.png"}}, {"iteration": 4, "imageAsset": "assets/latest-run/iteration_004_selected.png", "bestSoFarAsset": "assets/latest-run/iteration_004_selected.png", "nextPrompt": "Use the current Best-so-far sketch as the baseline. Preserve its rounded lower cheeks, centered front-facing pose, nose position, larger framing, plain white background, and simple black line style. Reduce the body and front paws a little more relative to the head, make the ears slightly narrower and closer together, and move the eyes subtly closer without changing their height. No color, text, realistic fur, shading, polished rendering, or 3D effects.", "evaluation": {"iteration": 4, "candidates": [{"id": "candidate_01", "file": "candidate_01.png", "face_ratio_score": 85.0, "ear_score": 84.0, "eye_position_score": 84.0, "nose_position_score": 85.0, "head_body_ratio_score": 81.0, "pose_score": 88.0, "silhouette_score": 85.0, "composition_score": 94.0, "sketch_style_score": 89.0, "shape_similarity_score": 85.75, "overall_score": 86.2375, "matched_points": ["rounded face and lower cheeks", "compact centered seated body", "shorter front paws", "stable eye and nose placement", "plain white sketch presentation"], "differences": ["body can still be slightly smaller relative to the head", "ears remain a little broad", "eyes could move a touch closer"]}, {"id": "candidate_02", "file": "candidate_02.png", "face_ratio_score": 84.0, "ear_score": 83.0, "eye_position_score": 84.0, "nose_position_score": 85.0, "head_body_ratio_score": 76.0, "pose_score": 87.0, "silhouette_score": 82.0, "composition_score": 93.0, "sketch_style_score": 89.0, "shape_similarity_score": 84.25, "overall_score": 84.9625, "matched_points": ["round face", "centered seated pose", "clear simple line style"], "differences": ["torso remains too tall", "front paws are too long", "ear tips spread outward"]}, {"id": "candidate_03", "file": "candidate_03.png", "face_ratio_score": 83.0, "ear_score": 84.0, "eye_position_score": 84.0, "nose_position_score": 84.0, "head_body_ratio_score": 71.0, "pose_score": 86.0, "silhouette_score": 80.0, "composition_score": 92.0, "sketch_style_score": 89.0, "shape_similarity_score": 83.0, "overall_score": 83.9, "matched_points": ["large facial silhouette", "good eye spacing", "simple black-on-white sketch"], "differences": ["body is too long", "front legs dominate the lower silhouette", "face-to-body ratio is weaker"]}], "selected_candidate": "candidate_01", "selected_score": 86.2375, "previous_best_score": 84.325, "best_updated": true, "best_so_far_score": 86.2375, "best_iteration": 4, "best_candidate": "candidate_01", "priority_differences": ["Reduce the body and front paws a little more relative to the head.", "Make the ears slightly narrower and closer together.", "Move the eyes subtly closer while preserving their height."], "suggestions": ["Preserve the rounded lower cheeks, centered pose, nose position, framing, and simple black-on-white style.", "Use iteration 4 candidate_01 as the next Best-so-far baseline."]}, "iterationScore": 86.2375, "bestSoFarScore": 86.2375, "bestUpdated": true, "selectedCandidate": "candidate_01", "candidateAssets": {"candidate_01": "assets/latest-run/iteration_004_candidate_01.png", "candidate_02": "assets/latest-run/iteration_004_candidate_02.png", "candidate_03": "assets/latest-run/iteration_004_candidate_03.png"}}, {"iteration": 5, "imageAsset": "assets/latest-run/iteration_005_selected.png", "bestSoFarAsset": "assets/latest-run/iteration_005_selected.png", "nextPrompt": "Use the current Best-so-far sketch as the baseline. Preserve its close narrow ears, centered seated pose, nose placement, framing, plain white background, and simple black line style. Shorten the torso and front paws slightly more, reduce the eye size while keeping their close spacing and height, make the upper face subtly wider than the lower muzzle, and tuck the small side paws closer to the body silhouette. No color, text, realistic fur, shading, polished rendering, or 3D effects.", "evaluation": {"iteration": 5, "candidates": [{"id": "candidate_01", "file": "candidate_01.png", "face_ratio_score": 84.0, "ear_score": 85.0, "eye_position_score": 85.0, "nose_position_score": 85.0, "head_body_ratio_score": 76.0, "pose_score": 87.0, "silhouette_score": 82.0, "composition_score": 93.0, "sketch_style_score": 89.0, "shape_similarity_score": 84.625, "overall_score": 85.2813, "matched_points": ["narrower ears", "stable centered face", "simple line style"], "differences": ["body is still too tall", "front paws remain long", "lower silhouette is too rectangular"]}, {"id": "candidate_02", "file": "candidate_02.png", "face_ratio_score": 86.0, "ear_score": 87.0, "eye_position_score": 86.0, "nose_position_score": 86.0, "head_body_ratio_score": 83.0, "pose_score": 89.0, "silhouette_score": 86.0, "composition_score": 94.0, "sketch_style_score": 89.0, "shape_similarity_score": 87.125, "overall_score": 87.4063, "matched_points": ["round balanced face", "closer upright ears", "shorter torso", "centered seated pose", "clean black-on-white sketch"], "differences": ["body and paws can be slightly shorter", "eyes are larger than the reference", "side paws are too prominent", "upper face could be subtly wider"]}, {"id": "candidate_03", "file": "candidate_03.png", "face_ratio_score": 85.0, "ear_score": 86.0, "eye_position_score": 86.0, "nose_position_score": 86.0, "head_body_ratio_score": 82.0, "pose_score": 88.0, "silhouette_score": 85.0, "composition_score": 93.0, "sketch_style_score": 88.0, "shape_similarity_score": 86.375, "overall_score": 86.6188, "matched_points": ["compact face cluster", "narrow ear silhouette", "plain white background"], "differences": ["torso is slightly narrow and long", "front paws are still oversized", "lower outline is less balanced"]}], "selected_candidate": "candidate_02", "selected_score": 87.4063, "previous_best_score": 86.2375, "best_updated": true, "best_so_far_score": 87.4063, "best_iteration": 5, "best_candidate": "candidate_02", "priority_differences": ["Shorten the torso and front paws slightly more.", "Reduce the eye size while preserving their close spacing and height.", "Make the upper face subtly wider than the lower muzzle area.", "Reduce the small side paws so they sit closer to the body silhouette."], "suggestions": ["Preserve the close narrow ears, centered seated pose, nose placement, and simple black-on-white style.", "Use iteration 5 candidate_02 as the Best-so-far baseline."]}, "iterationScore": 87.4063, "bestSoFarScore": 87.4063, "bestUpdated": true, "selectedCandidate": "candidate_02", "candidateAssets": {"candidate_01": "assets/latest-run/iteration_005_candidate_01.png", "candidate_02": "assets/latest-run/iteration_005_candidate_02.png", "candidate_03": "assets/latest-run/iteration_005_candidate_03.png"}}, {"iteration": 6, "imageAsset": "assets/latest-run/iteration_006_selected.png", "bestSoFarAsset": "assets/latest-run/iteration_006_selected.png", "nextPrompt": "Use the current Best-so-far sketch as the baseline. Preserve its smaller close-set eyes, wide rounded face, centered compact pose, framing, plain white background, and simple black line style. Reduce the body slightly more, make the ears a touch smaller without moving them, lower the nose marginally while keeping it centered, and tuck the side paws further into the body silhouette. No color, text, realistic fur, shading, polished rendering, or 3D effects.", "evaluation": {"iteration": 6, "candidates": [{"id": "candidate_01", "file": "candidate_01.png", "face_ratio_score": 87.0, "ear_score": 87.0, "eye_position_score": 90.0, "nose_position_score": 88.0, "head_body_ratio_score": 83.0, "pose_score": 89.0, "silhouette_score": 86.0, "composition_score": 93.0, "sketch_style_score": 89.0, "shape_similarity_score": 87.875, "overall_score": 88.0438, "matched_points": ["smaller close eyes", "broad round face", "centered seated pose"], "differences": ["body remains slightly broad", "front paws are still large", "side paws protrude"]}, {"id": "candidate_02", "file": "candidate_02.png", "face_ratio_score": 88.0, "ear_score": 87.0, "eye_position_score": 89.0, "nose_position_score": 88.0, "head_body_ratio_score": 82.0, "pose_score": 89.0, "silhouette_score": 86.0, "composition_score": 94.0, "sketch_style_score": 89.0, "shape_similarity_score": 87.875, "overall_score": 88.0438, "matched_points": ["wide upper face", "small eyes", "balanced composition", "simple line style"], "differences": ["torso is a little tall", "front paws are long", "ear tips remain broad"]}, {"id": "candidate_03", "file": "candidate_03.png", "face_ratio_score": 89.0, "ear_score": 88.0, "eye_position_score": 90.0, "nose_position_score": 88.0, "head_body_ratio_score": 86.0, "pose_score": 90.0, "silhouette_score": 88.0, "composition_score": 94.0, "sketch_style_score": 89.0, "shape_similarity_score": 89.125, "overall_score": 89.1063, "matched_points": ["wide rounded upper face", "small close-set eyes", "compact seated body", "shorter balanced front paws", "clean centered composition"], "differences": ["body could be slightly smaller still", "ears could be a touch smaller", "nose could sit marginally lower", "side paws remain visible beyond the silhouette"]}], "selected_candidate": "candidate_03", "selected_score": 89.1063, "previous_best_score": 87.4063, "best_updated": true, "best_so_far_score": 89.1063, "best_iteration": 6, "best_candidate": "candidate_03", "priority_differences": ["Reduce the body slightly more while keeping the current framing.", "Make the ears a touch smaller without changing their placement.", "Lower the nose marginally while preserving centered alignment.", "Tuck the side paws further into the body silhouette."], "suggestions": ["Preserve the smaller eye size, wide rounded face, compact pose, and simple black-on-white sketch style.", "Use iteration 6 candidate_03 as the next Best-so-far baseline."]}, "iterationScore": 89.1063, "bestSoFarScore": 89.1063, "bestUpdated": true, "selectedCandidate": "candidate_03", "candidateAssets": {"candidate_01": "assets/latest-run/iteration_006_candidate_01.png", "candidate_02": "assets/latest-run/iteration_006_candidate_02.png", "candidate_03": "assets/latest-run/iteration_006_candidate_03.png"}}, {"iteration": 7, "imageAsset": "assets/latest-run/iteration_007_selected.png", "bestSoFarAsset": "assets/latest-run/iteration_007_selected.png", "nextPrompt": "Use iteration 7 candidate_01, the current Best-so-far sketch, as the baseline. Preserve its wide rounded face, small close-set eyes, compact body, tucked side-paw silhouette, centered framing, plain white background, and simple black line style. Make both ears slightly shorter without changing their placement, shorten the front paws marginally without widening the torso, and lower the centered nose a very small amount. No color, text, realistic fur, shading, polished rendering, or 3D effects.", "evaluation": {"iteration": 7, "candidates": [{"id": "candidate_01", "file": "candidate_01.png", "face_ratio_score": 90.0, "ear_score": 89.0, "eye_position_score": 90.0, "nose_position_score": 90.0, "head_body_ratio_score": 90.0, "pose_score": 91.0, "silhouette_score": 91.0, "composition_score": 95.0, "sketch_style_score": 89.0, "shape_similarity_score": 90.75, "overall_score": 90.4875, "matched_points": ["wide rounded upper face", "small close-set eyes", "smaller compact torso", "side paws integrated into silhouette", "centered front-facing pose"], "differences": ["ears remain slightly taller than the photo", "front paws could be marginally shorter", "nose could sit a touch lower"]}, {"id": "candidate_02", "file": "candidate_02.png", "face_ratio_score": 90.0, "ear_score": 90.0, "eye_position_score": 90.0, "nose_position_score": 90.0, "head_body_ratio_score": 87.0, "pose_score": 90.0, "silhouette_score": 88.0, "composition_score": 94.0, "sketch_style_score": 89.0, "shape_similarity_score": 89.875, "overall_score": 89.7438, "matched_points": ["smaller ears", "wide face", "centered lower nose", "clean simple line style"], "differences": ["body remains tall", "front paws are long", "side paws still protrude"]}, {"id": "candidate_03", "file": "candidate_03.png", "face_ratio_score": 90.0, "ear_score": 89.0, "eye_position_score": 90.0, "nose_position_score": 90.0, "head_body_ratio_score": 88.0, "pose_score": 90.0, "silhouette_score": 88.0, "composition_score": 94.0, "sketch_style_score": 89.0, "shape_similarity_score": 89.875, "overall_score": 89.7438, "matched_points": ["balanced rounded face", "small eyes", "centered nose", "stable composition"], "differences": ["side paws remain visible", "torso could be smaller", "ear tips remain broad"]}], "selected_candidate": "candidate_01", "selected_score": 90.4875, "previous_best_score": 89.1063, "best_updated": true, "best_so_far_score": 90.4875, "best_iteration": 7, "best_candidate": "candidate_01", "priority_differences": ["Make both ears slightly shorter while keeping their placement and rounded-triangle shape.", "Shorten the front paws marginally without widening the torso.", "Lower the centered nose a very small amount.", "Preserve the newly compact body and tucked side-paw silhouette."], "suggestions": ["Use iteration 7 candidate_01 as the next Best-so-far baseline.", "Preserve the wide rounded face, small close-set eyes, compact pose, centered framing, and simple black line style."]}, "iterationScore": 90.4875, "bestSoFarScore": 90.4875, "bestUpdated": true, "selectedCandidate": "candidate_01", "candidateAssets": {"candidate_01": "assets/latest-run/iteration_007_candidate_01.png", "candidate_02": "assets/latest-run/iteration_007_candidate_02.png", "candidate_03": "assets/latest-run/iteration_007_candidate_03.png"}}, {"iteration": 8, "imageAsset": "assets/latest-run/iteration_008_selected.png", "bestSoFarAsset": "assets/latest-run/iteration_008_selected.png", "nextPrompt": "Use iteration 8 candidate_02, the current Best-so-far sketch, as the baseline. Preserve its broad upper face, compact seated body, short balanced ears, centered nose, tucked side silhouette, framing, plain white background, and simple black line style. Make both eye circles slightly smaller without changing their close-set placement, narrow the front paws slightly without lengthening them, and add subtle fullness to the lower cheek outline. No color, text, realistic fur, shading, polished rendering, or 3D effects.", "evaluation": {"iteration": 8, "candidates": [{"id": "candidate_01", "file": "candidate_01.png", "face_ratio_score": 91.0, "ear_score": 91.0, "eye_position_score": 89.0, "nose_position_score": 91.0, "head_body_ratio_score": 89.0, "pose_score": 91.0, "silhouette_score": 91.0, "composition_score": 95.0, "sketch_style_score": 89.0, "shape_similarity_score": 91.0, "overall_score": 90.7, "matched_points": ["shorter symmetrical ears", "wide rounded face", "short front paws", "tucked side silhouette", "centered pose"], "differences": ["eyes are slightly large", "torso is marginally taller than ideal", "cheek outline is a little narrow"]}, {"id": "candidate_02", "file": "candidate_02.png", "face_ratio_score": 92.0, "ear_score": 91.0, "eye_position_score": 90.0, "nose_position_score": 91.0, "head_body_ratio_score": 90.0, "pose_score": 92.0, "silhouette_score": 92.0, "composition_score": 95.0, "sketch_style_score": 89.0, "shape_similarity_score": 91.625, "overall_score": 91.2313, "matched_points": ["broad upper face", "short balanced ears", "compact seated body", "centered facial features", "clean tucked silhouette"], "differences": ["eyes could be slightly smaller", "front paws could be a touch narrower", "lower cheek could be subtly fuller"]}, {"id": "candidate_03", "file": "candidate_03.png", "face_ratio_score": 91.0, "ear_score": 90.0, "eye_position_score": 90.0, "nose_position_score": 91.0, "head_body_ratio_score": 88.0, "pose_score": 91.0, "silhouette_score": 90.0, "composition_score": 94.0, "sketch_style_score": 89.0, "shape_similarity_score": 90.625, "overall_score": 90.3813, "matched_points": ["wide face", "lower centered nose", "simple line quality", "hidden side paws"], "differences": ["body is taller", "front paws read as long", "ear tips remain slightly broad"]}], "selected_candidate": "candidate_02", "selected_score": 91.2313, "previous_best_score": 90.4875, "best_updated": true, "best_so_far_score": 91.2313, "best_iteration": 8, "best_candidate": "candidate_02", "priority_differences": ["Reduce both eye circles slightly while preserving their close-set placement.", "Narrow the front paws a little without increasing their length.", "Add a subtle amount of fullness to the lower cheek outline.", "Preserve the compact body, short ears, centered nose, and tucked silhouette."], "suggestions": ["Use iteration 8 candidate_02 as the next Best-so-far baseline.", "Keep the drawing as a sparse black-on-white hand sketch with no added detail or shading."]}, "iterationScore": 91.2313, "bestSoFarScore": 91.2313, "bestUpdated": true, "selectedCandidate": "candidate_02", "candidateAssets": {"candidate_01": "assets/latest-run/iteration_008_candidate_01.png", "candidate_02": "assets/latest-run/iteration_008_candidate_02.png", "candidate_03": "assets/latest-run/iteration_008_candidate_03.png"}}]}</script>
+  <script src="script.js"></script>
+</body>
+</html>

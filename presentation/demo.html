@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Demo · Loop Engineering</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="demo" data-previous-page="harness-vs-loop.html" data-next-page="results.html">
+  <nav class="chapter-nav" aria-label="Chapter navigation"><a href="expansion.html" data-page="expansion">Expansion</a><a href="prompt.html" data-page="prompt">Prompt</a><a href="context.html" data-page="context">Context</a><a href="harness.html" data-page="harness">Harness</a><a href="loop.html" data-page="loop">Loop</a><a href="harness-vs-loop.html" data-page="harness-loop">Harness vs Loop</a><a href="demo.html" data-page="demo" class="active" aria-current="page">Demo</a><a href="results.html" data-page="results">Results</a></nav>
+  <main class="deck">
+
+        <section id="chapter-demo" class="slide spread demo-intro-slide" data-chapter="demo">
+          <header><p class="eyebrow">Demo Transition</p><h2>Loop를 반복하면 실제로 목표에 더 가까워질까?</h2></header>
+          <div class="narrative cols-2"><article><h3>왜 이 실험인가</h3><p>실제 포메라니안 사진을 고정 원본으로 두고 첫 결과는 일부러 단순한 손그림으로 제한합니다. 형태 차이가 분명해 평가와 피드백이 다음 결과를 어떻게 바꾸는지 관찰하기 좋습니다.</p></article><article><h3>무엇을 검증하는가</h3><p>이미지 모델의 절대 성능을 자랑하려는 것이 아닙니다. Evaluator가 찾은 구조적 차이를 Prompt Refiner가 다음 입력에 반영할 때 실제 결과가 어떻게 달라지는지 확인합니다.</p></article></div>
+          <div class="flow demo-flow"><div class="node">Original Photo</div><div class="arrow">→</div><div class="node mint">Generator</div><div class="arrow">→</div><div class="node">Simple Sketch</div><div class="arrow">→</div><div class="node violet">Evaluator</div><div class="arrow">→</div><div class="node">Feedback</div><div class="arrow">→</div><div class="node mint">Prompt Refiner</div><div class="arrow">↺</div></div>
+          <div class="demo-goals"><article><b>Best-of-N</b><p>Generator가 매 iteration 후보 3장을 생성합니다.</p></article><article><b>Evaluator</b><p>원본과 각 후보의 구조적 차이를 독립 평가합니다.</p></article><article><b>Prompt Refiner</b><p>선택된 후보의 핵심 차이만 다음 지시로 바꿉니다.</p></article><article><b>Best-so-far</b><p>전체 최고 결과를 다음 generation 기준으로 보존합니다.</p></article></div>
+          <div class="callout">관찰 포인트 · 반복 횟수가 아니라 평가 결과가 실제 다음 Prompt와 생성 결과에 반영되는지를 봅니다.</div>
+        </section>
+
+  </main>
+  <div class="page-position">8 / 9</div>
+
+  <script src="script.js"></script>
+</body>
+</html>

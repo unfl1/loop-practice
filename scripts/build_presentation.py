@@ -1,4 +1,4 @@
-"""Build presentation/index.html from the latest successful run output."""
+"""Build the multi-page presentation from the latest successful run output."""
 
 from __future__ import annotations
 
@@ -17,6 +17,17 @@ ASSETS_DIR = PRESENTATION_DIR / "assets"
 LATEST_RUN_ASSETS_DIR = ASSETS_DIR / "latest-run"
 INDEX_PATH = PRESENTATION_DIR / "index.html"
 BEST_OF_N_SCHEMA_VERSION = "best_of_n_v1"
+PAGE_ORDER = (
+    ("index", "Intro", "index.html"),
+    ("expansion", "Expansion", "expansion.html"),
+    ("prompt", "Prompt", "prompt.html"),
+    ("context", "Context", "context.html"),
+    ("harness", "Harness", "harness.html"),
+    ("loop", "Loop", "loop.html"),
+    ("harness-loop", "Harness vs Loop", "harness-vs-loop.html"),
+    ("demo", "Demo", "demo.html"),
+    ("results", "Results", "results.html"),
+)
 
 
 @dataclass
@@ -521,7 +532,9 @@ def fixed_slides_v2() -> list[str]:
         <section class="slide title-slide center" data-chapter="intro">
           <div class="title-mark">Loop</div>
           <div><p class="eyebrow">AI System Design</p><h1>Loop Engineering</h1>
-          <p class="title-sub">한 번 잘 시키는 것에서,<br>결과가 다음 실행을 바꾸는 구조로</p></div>
+          <p class="title-sub">한 번 잘 시키는 것에서,<br>결과가 다음 실행을 바꾸는 구조로</p>
+          <p class="lead intro-copy">Prompt에서 Context와 Harness를 거쳐 Loop까지, AI에게 맡기는 범위가 어떻게 넓어지는지 살펴봅니다. 마지막에는 포메라니안 Best-of-N 실험으로 평가와 기억이 다음 결과를 바꾸는 과정을 확인합니다.</p>
+          <a class="start-button" href="expansion.html">Expansion에서 시작하기 →</a></div>
         </section>
         """,
         """
@@ -549,6 +562,7 @@ def fixed_slides_v2() -> list[str]:
             <article><h3>무엇인가</h3><p>Prompt Engineering은 AI가 원하는 방향으로 응답하도록 지시문의 구조와 표현을 설계하는 접근입니다. 역할, 목표, 배경, 제약조건, 출력 형식과 예시를 조합해 해야 할 일을 명확하게 만듭니다.</p></article>
             <article><h3>왜 필요한가</h3><p>지시가 모호하면 같은 모델도 서로 다른 결과를 냅니다. 좋은 Prompt는 성공 기준과 작업 경계를 선명하게 해 불필요한 추측을 줄이고 결과의 일관성을 높입니다.</p></article>
           </div>
+          <div class="explain"><p><b>구성 요소</b><br>역할과 목표를 먼저 정하고, 지켜야 할 제약과 원하는 출력 형식을 구체적으로 적습니다.</p><p><b>짧은 예시</b><br>“코드 리뷰어로서 오류 원인과 수정안을 표로 정리하되, 확인되지 않은 내용은 추측하지 마세요.”처럼 성공 기준을 함께 전달합니다.</p></div>
           <div class="flow big-flow"><div class="node">Human</div><div class="arrow">→</div><div class="node mint">Prompt</div><div class="arrow">→</div><div class="node violet">AI</div><div class="arrow">→</div><div class="node">Result</div><div class="arrow">→</div><div class="node">판단·수정</div><div class="arrow">↺</div></div>
           <div class="callout">한계 · Prompt는 행동 방향을 바꾸지만 모델에게 없는 정보를 만들어 주지는 않습니다. 결과가 부족하면 사람이 직접 판단하고 Prompt를 다시 고쳐야 합니다.</div>
         </section>
@@ -599,7 +613,7 @@ def fixed_slides_v2() -> list[str]:
           <header><p class="eyebrow">Demo Transition</p><h2>Loop를 반복하면 실제로 목표에 더 가까워질까?</h2></header>
           <div class="narrative cols-2"><article><h3>왜 이 실험인가</h3><p>실제 포메라니안 사진을 고정 원본으로 두고 첫 결과는 일부러 단순한 손그림으로 제한합니다. 형태 차이가 분명해 평가와 피드백이 다음 결과를 어떻게 바꾸는지 관찰하기 좋습니다.</p></article><article><h3>무엇을 검증하는가</h3><p>이미지 모델의 절대 성능을 자랑하려는 것이 아닙니다. Evaluator가 찾은 구조적 차이를 Prompt Refiner가 다음 입력에 반영할 때 실제 결과가 어떻게 달라지는지 확인합니다.</p></article></div>
           <div class="flow demo-flow"><div class="node">Original Photo</div><div class="arrow">→</div><div class="node mint">Generator</div><div class="arrow">→</div><div class="node">Simple Sketch</div><div class="arrow">→</div><div class="node violet">Evaluator</div><div class="arrow">→</div><div class="node">Feedback</div><div class="arrow">→</div><div class="node mint">Prompt Refiner</div><div class="arrow">↺</div></div>
-          <div class="demo-goals"><article><b>Generate</b><p>매 iteration 후보 3장을 생성합니다.</p></article><article><b>Evaluate</b><p>원본과 구조적 차이를 독립 평가합니다.</p></article><article><b>Select</b><p>현재 최고 후보를 선택합니다.</p></article><article><b>Remember</b><p>Best-so-far를 다음 기준으로 보존합니다.</p></article></div>
+          <div class="demo-goals"><article><b>Best-of-N</b><p>Generator가 매 iteration 후보 3장을 생성합니다.</p></article><article><b>Evaluator</b><p>원본과 각 후보의 구조적 차이를 독립 평가합니다.</p></article><article><b>Prompt Refiner</b><p>선택된 후보의 핵심 차이만 다음 지시로 바꿉니다.</p></article><article><b>Best-so-far</b><p>전체 최고 결과를 다음 generation 기준으로 보존합니다.</p></article></div>
           <div class="callout">관찰 포인트 · 반복 횟수가 아니라 평가 결과가 실제 다음 Prompt와 생성 결과에 반영되는지를 봅니다.</div>
         </section>
         """,
@@ -630,7 +644,7 @@ def dynamic_slides(data: RunData) -> list[str]:
         f"""
         <section id="chapter-results" class="slide timeline-slide spread result-slide" data-chapter="results">
           <header>
-            <p class="eyebrow">Interactive Timeline · {escape(data.run_dir.name)}</p>
+            <p class="eyebrow">Results · {escape(data.run_dir.name)}</p>
             <h2>Selected result와 Best-so-far를 함께 봅니다</h2>
           </header>
           <div class="timeline-layout">
@@ -735,38 +749,58 @@ def no_data_slides(reason: str) -> list[str]:
     ]
 
 
-def build_html(data: RunData | None, reason: str = "no successful complete run found") -> str:
-    slides = fixed_slides_v2() + (dynamic_slides(data) if data else no_data_slides(reason))
-    payload = run_payload(data) if data else {"runName": None, "referenceAsset": None, "summary": {}, "iterations": []}
-    data_json = json.dumps(payload, ensure_ascii=False).replace("</", "<\\/")
-    return f"""<!doctype html>
+def navigation_html(active_page: str) -> str:
+    links = []
+    for page_id, label, filename in PAGE_ORDER[1:]:
+        active = ' class="active" aria-current="page"' if page_id == active_page else ""
+        links.append(f'<a href="{filename}" data-page="{page_id}"{active}>{label}</a>')
+    return '<nav class="chapter-nav" aria-label="Chapter navigation">' + "".join(links) + "</nav>"
+
+
+def page_html(page_id: str, title: str, content: str, payload: dict | None = None) -> str:
+    page_index = next(index for index, item in enumerate(PAGE_ORDER) if item[0] == page_id)
+    previous_page = PAGE_ORDER[page_index - 1][2] if page_index > 0 else ""
+    next_page = PAGE_ORDER[page_index + 1][2] if page_index + 1 < len(PAGE_ORDER) else ""
+    run_data = ""
+    if page_id == "results":
+        data_json = json.dumps(payload or {}, ensure_ascii=False).replace("</", "<\\/")
+        run_data = f'<script id="run-data" type="application/json">{data_json}</script>'
+    html = f"""<!doctype html>
 <html lang="ko">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Loop Engineering</title>
+  <title>{escape(title)} · Loop Engineering</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-  <nav class="chapter-nav" aria-label="Chapter navigation">
-    <a href="#chapter-expansion" data-chapter-link="expansion">Expansion</a>
-    <a href="#chapter-prompt" data-chapter-link="prompt">Prompt</a>
-    <a href="#chapter-context" data-chapter-link="context">Context</a>
-    <a href="#chapter-harness" data-chapter-link="harness">Harness</a>
-    <a href="#chapter-loop" data-chapter-link="loop">Loop</a>
-    <a href="#chapter-harness-loop" data-chapter-link="harness-loop">Harness vs Loop</a>
-    <a href="#chapter-demo" data-chapter-link="demo">Demo</a>
-    <a href="#chapter-results" data-chapter-link="results">Results</a>
-  </nav>
+<body data-page="{page_id}" data-previous-page="{previous_page}" data-next-page="{next_page}">
+  {navigation_html(page_id)}
   <main class="deck">
-    {''.join(slides)}
+    {content}
   </main>
-  <div class="progress"></div>
-  <script id="run-data" type="application/json">{data_json}</script>
+  <div class="page-position">{page_index + 1} / {len(PAGE_ORDER)}</div>
+{run_data}
   <script src="script.js"></script>
 </body>
 </html>
 """
+    return "\n".join(line.rstrip() for line in html.splitlines()) + "\n"
+
+
+def build_pages(data: RunData | None, reason: str = "no successful complete run found") -> dict[str, str]:
+    fixed = fixed_slides_v2()
+    payload = run_payload(data) if data else {"runName": None, "referenceAsset": None, "summary": {}, "iterations": []}
+    return {
+        "index.html": page_html("index", "Intro", fixed[0]),
+        "expansion.html": page_html("expansion", "Expansion", fixed[1]),
+        "prompt.html": page_html("prompt", "Prompt", fixed[2]),
+        "context.html": page_html("context", "Context", fixed[3]),
+        "harness.html": page_html("harness", "Harness", fixed[4]),
+        "loop.html": page_html("loop", "Loop", fixed[5]),
+        "harness-vs-loop.html": page_html("harness-loop", "Harness vs Loop", fixed[6]),
+        "demo.html": page_html("demo", "Demo", fixed[7]),
+        "results.html": page_html("results", "Results", "".join(dynamic_slides(data) if data else no_data_slides(reason)), payload),
+    }
 
 
 def build_presentation() -> BuildResult:
@@ -776,7 +810,8 @@ def build_presentation() -> BuildResult:
 
     PRESENTATION_DIR.mkdir(parents=True, exist_ok=True)
     data = load_successful_run(run_dir, summary)
-    INDEX_PATH.write_text(build_html(data), encoding="utf-8")
+    for filename, html in build_pages(data).items():
+        (PRESENTATION_DIR / filename).write_text(html, encoding="utf-8")
     return BuildResult(True, run_dir, len(data.iterations), "presentation updated")
 
 

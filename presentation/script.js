@@ -1,89 +1,47 @@
-const slides = Array.from(document.querySelectorAll(".slide"));
-const progress = document.querySelector(".progress");
-const chapterLinks = Array.from(document.querySelectorAll("[data-chapter-link]"));
-let current = 0;
-let isProgrammaticScroll = false;
-
-function clampSlideIndex(index) {
-  return Math.max(0, Math.min(slides.length - 1, index));
-}
-
-function updateProgress() {
-  slides.forEach((slide, slideIndex) => {
-    slide.classList.toggle("active", slideIndex === current);
-  });
-  const activeChapter = slides[current]?.dataset.chapter;
-  chapterLinks.forEach((link) => {
-    const isActive = Boolean(activeChapter) && link.dataset.chapterLink === activeChapter;
-    link.classList.toggle("active", isActive);
-    if (isActive) link.setAttribute("aria-current", "page");
-    else link.removeAttribute("aria-current");
-  });
-  if (progress) progress.textContent = `${current + 1} / ${slides.length}`;
-}
-
-function scrollToSlide(index) {
-  current = clampSlideIndex(index);
-  updateProgress();
-  isProgrammaticScroll = true;
-  slides[current].scrollIntoView({ behavior: "smooth", block: "start" });
-  window.setTimeout(() => {
-    isProgrammaticScroll = false;
-  }, 700);
-}
-
-function nearestSlideIndex() {
-  const anchor = window.scrollY + Math.min(window.innerHeight * 0.32, 260);
-  let visibleSection = 0;
-  slides.forEach((slide, index) => {
-    if (slide.offsetTop <= anchor) visibleSection = index;
-  });
-  return visibleSection;
-}
-
-function syncCurrentSlide() {
-  if (isProgrammaticScroll) return;
-  const nextCurrent = nearestSlideIndex();
-  if (nextCurrent !== current) {
-    current = nextCurrent;
-    updateProgress();
-  }
-}
-
 function eventStartedInInteractiveControl(event) {
   const target = event.target;
   if (!(target instanceof Element)) return false;
   return Boolean(target.closest("a, input, textarea, select, button, [contenteditable='true']"));
 }
 
-function initChapterNavigation() {
-  chapterLinks.forEach((link) => {
-    link.addEventListener("click", (event) => {
-      event.preventDefault();
-      const targetId = link.getAttribute("href")?.slice(1);
-      const target = targetId ? document.getElementById(targetId) : null;
-      const slideIndex = target ? slides.indexOf(target) : -1;
-      if (slideIndex >= 0) scrollToSlide(slideIndex);
-    });
-  });
+function atPageTop() {
+  return window.scrollY <= 2;
+}
+
+function atPageBottom() {
+  return window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
+}
+
+function navigateTo(filename) {
+  if (filename) window.location.href = filename;
 }
 
 document.addEventListener("keydown", (event) => {
   if (eventStartedInInteractiveControl(event)) return;
 
-  const nextKeys = ["ArrowRight", "ArrowDown", "PageDown", " "];
-  const prevKeys = ["ArrowLeft", "ArrowUp", "PageUp"];
-  if (nextKeys.includes(event.key)) {
+  const previousPage = document.body.dataset.previousPage;
+  const nextPage = document.body.dataset.nextPage;
+
+  if (event.key === "ArrowRight") {
     event.preventDefault();
-    scrollToSlide(current + 1);
+    navigateTo(nextPage);
+    return;
   }
-  if (prevKeys.includes(event.key)) {
+  if (event.key === "ArrowLeft") {
     event.preventDefault();
-    scrollToSlide(current - 1);
+    navigateTo(previousPage);
+    return;
+  }
+  if (["PageDown", " "].includes(event.key) && atPageBottom()) {
+    event.preventDefault();
+    navigateTo(nextPage);
+    return;
+  }
+  if (event.key === "PageUp" && atPageTop()) {
+    event.preventDefault();
+    navigateTo(previousPage);
   }
 });
-
-window.addEventListener("scroll", syncCurrentSlide, { passive: true });
 
 function scoreText(value) {
   const number = Number(value);
@@ -207,7 +165,4 @@ function renderSelection(container, item) {
   container.append(status, details);
 }
 
-initChapterNavigation();
 initTimeline();
-current = nearestSlideIndex();
-updateProgress();
