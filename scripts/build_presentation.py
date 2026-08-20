@@ -385,6 +385,95 @@ def best_iteration(data: RunData) -> IterationResult:
     return max(data.iterations, key=lambda item: item.best_so_far_score or -1)
 
 
+DISPLAY_GUIDANCE = {
+    "face_ratio_score": (
+        "얼굴 비율",
+        "얼굴의 위아래 비율과 둥근 윤곽을 원본에 더 가깝게 조정합니다.",
+        "넓고 둥근 얼굴 비율은 현재 결과의 장점이므로 그대로 유지합니다.",
+    ),
+    "ear_score": (
+        "귀",
+        "귀의 크기와 끝 모양, 좌우 간격을 원본 사진과 더 비슷하게 다듬습니다.",
+        "귀의 크기와 좌우 배치는 원본과 잘 맞으므로 현재 형태를 유지합니다.",
+    ),
+    "eye_position_score": (
+        "눈",
+        "두 눈의 크기와 높이, 서로의 간격을 원본의 인상에 맞게 미세 조정합니다.",
+        "작고 가까운 눈의 배치는 안정적이므로 다음 결과에서도 보존합니다.",
+    ),
+    "nose_position_score": (
+        "코",
+        "코의 크기와 세로 위치를 중앙 정렬을 해치지 않는 범위에서 조정합니다.",
+        "코가 얼굴 중앙에 놓인 정렬은 잘 맞으므로 위치를 유지합니다.",
+    ),
+    "head_body_ratio_score": (
+        "머리와 몸의 비율",
+        "큰 머리에 비해 몸통과 앞발이 더 작고 짧게 보이도록 비율을 조정합니다.",
+        "큰 머리와 작은 몸의 대비가 잘 살아 있으므로 현재 비율을 유지합니다.",
+    ),
+    "pose_score": (
+        "자세",
+        "정면을 바라보는 앉은 자세와 좌우 균형을 원본에 더 가깝게 맞춥니다.",
+        "중앙 정렬된 정면 앉은 자세는 안정적이므로 그대로 유지합니다.",
+    ),
+    "silhouette_score": (
+        "실루엣",
+        "볼과 몸통, 옆발이 만드는 전체 외곽선을 더 단정하고 원본에 가깝게 다듬습니다.",
+        "머리부터 몸까지 이어지는 단순하고 균형 잡힌 실루엣을 유지합니다.",
+    ),
+    "composition_score": (
+        "구도",
+        "강아지의 크기와 여백을 조정해 화면 중앙 구도를 더 안정적으로 만듭니다.",
+        "화면 중앙 배치와 충분한 흰 여백은 잘 맞으므로 그대로 유지합니다.",
+    ),
+}
+
+
+def display_score_items(item: IterationResult) -> list[tuple[str, float]]:
+    candidate = selected_eval(item)
+    values = []
+    for key in DISPLAY_GUIDANCE:
+        value = score(candidate.get(key))
+        if value is not None:
+            values.append((key, value))
+    return values
+
+
+def display_priority_ko(item: IterationResult) -> list[str]:
+    values = sorted(display_score_items(item), key=lambda pair: pair[1])
+    requested = len(item.evaluation.get("priority_differences", [])) or 3
+    return [DISPLAY_GUIDANCE[key][1] for key, _ in values[: min(requested, 4)]]
+
+
+def display_feedback_ko(item: IterationResult) -> list[str]:
+    values = sorted(display_score_items(item), key=lambda pair: pair[1], reverse=True)
+    messages = [DISPLAY_GUIDANCE[key][2] for key, _ in values[:3]]
+    messages.append("단순한 검은 선과 흰 배경의 손그림 스타일은 다음 생성에서도 유지합니다.")
+    if item.best_updated:
+        messages.append(
+            f"iteration {item.iteration}에서 선택된 이미지를 현재 최고 결과(best-so-far)의 기준으로 사용합니다."
+        )
+    else:
+        messages.append("이번 결과보다 점수가 높은 기존 이미지를 현재 최고 결과(best-so-far)로 계속 사용합니다.")
+    return messages
+
+
+def display_next_prompt_ko(item: IterationResult) -> str:
+    priority = display_priority_ko(item)
+    best_basis = (
+        f"iteration {item.iteration}의 선택 이미지를 현재 최고 결과(best-so-far)의 시각적 기준으로 사용합니다."
+        if item.best_updated
+        else "기존 현재 최고 결과(best-so-far) 이미지를 다음 생성의 시각적 기준으로 사용합니다."
+    )
+    changes = " ".join(priority)
+    return (
+        f"{best_basis}\n"
+        "중앙 정렬된 정면 자세와 단순하고 느슨한 검은 선 스타일은 유지합니다.\n"
+        f"다음 생성에서는 다음 사항을 우선 반영합니다. {changes}\n"
+        "배경은 흰색으로 유지하고, 색상·텍스트·사실적인 털·음영·정교한 렌더링·3D 효과는 추가하지 않습니다."
+    )
+
+
 def run_payload(data: RunData) -> dict:
     return {
         "runName": data.run_dir.name,
@@ -403,6 +492,9 @@ def run_payload(data: RunData) -> dict:
                 "bestUpdated": item.best_updated,
                 "selectedCandidate": item.selected_candidate,
                 "candidateAssets": item.candidate_assets,
+                "displayPriority": display_priority_ko(item),
+                "displayFeedback": display_feedback_ko(item),
+                "displayNextPrompt": display_next_prompt_ko(item),
             }
             for item in data.iterations
         ],
@@ -682,10 +774,10 @@ def dynamic_slides(data: RunData) -> list[str]:
             <span>Iteration {len(iterations)}</span>
           </div>
           <div class="timeline-details">
-            <article><h3>Selection</h3><div id="timeline-selection"></div></article>
-            <article><h3>Priority Differences</h3><div id="timeline-priority"></div></article>
-            <article><h3>Feedback</h3><div id="timeline-feedback"></div></article>
-            <article><h3>Next Prompt</h3><pre id="timeline-prompt"></pre></article>
+            <article><h3>선택 결과</h3><div id="timeline-selection"></div></article>
+            <article><h3>우선 수정 포인트</h3><div id="timeline-priority"></div></article>
+            <article><h3>피드백</h3><div id="timeline-feedback"></div></article>
+            <article><h3>다음 프롬프트</h3><pre id="timeline-prompt"></pre></article>
           </div>
         </section>
         """,

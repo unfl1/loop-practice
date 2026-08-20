@@ -136,9 +136,9 @@ function initTimeline() {
     renderMetric(metricSlots[2], "structure", candidate.shape_similarity_score ?? evaluation.content_similarity_score);
     renderMetric(metricSlots[3], "sketch style", candidate.sketch_style_score ?? evaluation.sketch_style_score);
     renderSelection(selection, item);
-    renderPriority(priority, evaluation.priority_differences || []);
-    renderPriority(feedback, evaluation.suggestions || []);
-    prompt.textContent = item.nextPrompt || "기록된 next_prompt가 없습니다.";
+    renderPriority(priority, item.displayPriority || evaluation.priority_differences || []);
+    renderPriority(feedback, item.displayFeedback || evaluation.suggestions || []);
+    prompt.textContent = item.displayNextPrompt || item.nextPrompt || "기록된 다음 프롬프트가 없습니다.";
   }
 
   slider.addEventListener("input", () => render(Number(slider.value) - 1));
@@ -160,7 +160,7 @@ function renderSelection(container, item) {
     : "이번 selected candidate보다 이전 Best-so-far가 더 좋아서 기존 best를 유지했습니다.";
 
   const details = document.createElement("p");
-  details.textContent = `selected: ${item.selectedCandidate || "N/A"} · iteration score: ${scoreText(item.iterationScore)} · best-so-far: ${scoreText(item.bestSoFarScore)}`;
+  details.textContent = `선택된 후보: ${item.selectedCandidate || "N/A"} · 현재 iteration 점수: ${scoreText(item.iterationScore)} · 최고 누적 점수: ${scoreText(item.bestSoFarScore)}`;
 
   container.append(status, details);
 }
